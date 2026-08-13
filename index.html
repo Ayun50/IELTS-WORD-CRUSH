@@ -1,0 +1,2698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://app-writeup.britishcouncilexams.cn/favicon.ico">
+    <title>IELTS Word Crush</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --text-color: #333;
+            --light-text: #7f8c8d;
+            --card-size: 80px;
+            --card-gap: 8px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 80px; /* 添加这里：为固定横幅预留空间 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+        
+        /* Header styles */
+        .header-container {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr) 250px;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .title-container h1,
+        .header-container h1 {
+            text-align: center;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        
+        .dropdown {
+            margin-right: auto; /* 将下拉菜单靠左对齐 */
+            position: relative;
+        }
+        
+        .dropbtn {
+            background: linear-gradient(135deg, #4a6bdb 0%, #667eea 100%);
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            margin-top: 0;
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+        
+        .dropbtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            z-index: 20;
+            top: calc(100% - 1px);
+            left: 0;
+        }
+        
+        .dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .dropdown.open .dropdown-content {
+            display: block;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+        }
+        
+        .logo-container {
+            margin-left: auto; /* 将LOGO靠右对齐 */
+        }
+
+        .logo-container a {
+            display: block;
+        }
+        
+        .logo {
+            width: 250px;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        /* Game container styles */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--light-text);
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(10, var(--card-size));
+            gap: var(--card-gap);
+            justify-content: center;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            width: var(--card-size);
+            height: var(--card-size);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 1.3;
+            word-break: break-word;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* Card colors */
+        .card.color1 { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .card.color2 { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .card.color3 { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        .card.color4 { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
+        .card.color5 { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        .card.color6 { background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); }
+        .card.color7 { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); }
+        .card.color8 { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); }
+        .card.color9 { background: linear-gradient(135deg, #e84393 0%, #fd79a8 100%); }
+        .card.color10 { background: linear-gradient(135deg, #00cec9 0%, #0984e3 100%); }
+        .card.color11 { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+        .card.color12 { background: linear-gradient(135deg, #fd9644 0%, #fa8231 100%); }
+        
+        /* Card states */
+        .card.selected::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        .card.matched {
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s ease;
+        }
+        
+        /* Button styles */
+        button {
+            background: linear-gradient(135deg, var(--success-color) 0%, #27ae60 100%);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px 40px; /* 增加内边距 */
+            border-radius: 10px;
+            text-align: center;
+            max-width: 450px; /* 增加最大宽度 */
+            width: 90%; /* 添加宽度百分比，使在小屏幕上也能适应 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.4s ease;
+        }
+        
+        .modal h2 {
+            color: var(--success-color);
+            margin-top: 0;
+            font-size: 24px; /* 适当增大字体 */
+            line-height: 1.3; /* 添加行高 */
+            padding: 0 20px; /* 添加左右内边距 */
+        }
+        
+        .modal p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .modal button {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            margin-top: 15px;
+        }
+        
+        /* Copyright styles */
+        .copyright-banner {
+            position: fixed; /* 修改这里：从 relative 改为 fixed */
+            bottom: 0; /* 确保在底部 */
+            left: 0;
+            width: 100%;
+            color: white;
+            z-index: 10; /* 确保低于模态窗口的 100 */
+            background: linear-gradient(135deg, #4a6bdb 0%, #667eea 100%);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 -4px 12px rgba(102, 126, 234, 0.2);
+            padding: 12px 0;
+            margin-top: 0; /* 移除 margin-top */
+        }
+        
+        .copyright-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .copyright-marquee {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            animation: copyright-pulse 6s infinite;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .copyright-owner {
+            color: #f6e05e;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 16px;
+            position: relative;
+            padding: 0 5px;
+        }
+        
+        .copyright-owner::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            opacity: 0.7;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes copyright-pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        /* iPad portrait and landscape */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            body {
+                padding: 16px;
+                padding-bottom: calc(76px + env(safe-area-inset-bottom));
+            }
+
+            :root {
+                --card-size: clamp(72px, 9vw, 80px);
+                --card-gap: 7px;
+            }
+
+            .header-container {
+                grid-template-columns: minmax(145px, auto) minmax(0, 1fr) minmax(150px, 180px);
+                gap: 16px;
+                margin-bottom: 16px;
+            }
+
+            .header-container h1 {
+                font-size: clamp(22px, 3vw, 28px);
+                line-height: 1.25;
+                padding: 0;
+            }
+
+            .dropdown,
+            .logo-container {
+                margin: 0;
+            }
+
+            .logo-container {
+                justify-self: end;
+            }
+
+            .logo {
+                width: 100%;
+                max-width: 180px;
+            }
+
+            .game-container {
+                grid-template-columns: repeat(8, var(--card-size));
+            }
+
+            .stats {
+                margin-bottom: 16px;
+            }
+        }
+
+        /* Cellphones */
+        @media (max-width: 767px) {
+            :root {
+                --card-size: clamp(58px, 18vw, 68px);
+                --card-gap: 6px;
+            }
+
+            body {
+                padding: 12px;
+                padding-bottom: calc(70px + env(safe-area-inset-bottom));
+            }
+
+            .header-container {
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-areas:
+                    "dropdown logo"
+                    "title title";
+                align-items: center;
+                gap: 8px 12px;
+                margin-bottom: 12px;
+            }
+
+            .dropdown {
+                grid-area: dropdown;
+                margin: 0;
+                justify-self: start;
+            }
+
+            .dropbtn {
+                padding: 9px 14px;
+                font-size: 14px;
+            }
+
+            .dropdown-content {
+                min-width: 200px;
+                max-height: min(55vh, 360px);
+            }
+
+            .header-container h1 {
+                grid-area: title;
+                font-size: 22px;
+                line-height: 1.25;
+                padding: 4px 0 0;
+            }
+
+            .logo-container {
+                grid-area: logo;
+                margin: 0;
+                justify-self: end;
+            }
+
+            .logo {
+                width: 140px;
+                max-width: 38vw;
+            }
+
+            .game-container {
+                grid-template-columns: repeat(4, var(--card-size));
+                margin-bottom: 16px;
+            }
+
+            .card {
+                padding: 5px;
+                font-size: 11.5px;
+                line-height: 1.15;
+            }
+
+            .stats {
+                flex-direction: row;
+                gap: 0;
+                max-width: 100%;
+                padding: 10px;
+                margin-bottom: 14px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .modal {
+                padding: 12px;
+                height: 100dvh;
+                overflow-y: auto;
+            }
+
+            .modal-content {
+                width: 100%;
+                padding: 24px 18px;
+            }
+
+            .modal h2 {
+                padding: 0;
+                font-size: 22px;
+            }
+
+            .copyright-banner {
+                padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            }
+
+            .copyright-marquee {
+                flex-wrap: wrap;
+                gap: 4px 8px;
+                padding: 0 8px;
+                white-space: normal;
+                font-size: 10px;
+                line-height: 1.1;
+                text-align: center;
+            }
+
+            .copyright-owner {
+                font-size: 12px;
+            }
+
+            .copyright-owner::after {
+                bottom: -1px;
+            }
+        }
+
+        @media (max-width: 359px) {
+            :root {
+                --card-size: 56px;
+                --card-gap: 5px;
+            }
+
+            .header-container h1 {
+                font-size: 20px;
+            }
+
+            .logo {
+                width: 120px;
+            }
+        }
+
+        /* Cellphones in landscape orientation */
+        @media (max-width: 767px) and (orientation: landscape) {
+            :root {
+                --card-size: clamp(54px, 9vw, 62px);
+            }
+
+            .header-container {
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                grid-template-areas: "dropdown title logo";
+            }
+
+            .header-container h1 {
+                padding: 0;
+                font-size: 20px;
+            }
+
+            .logo {
+                width: 120px;
+            }
+
+            .game-container {
+                grid-template-columns: repeat(6, var(--card-size));
+            }
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            .card:hover,
+            button:hover,
+            .logo:hover {
+                transform: none;
+            }
+        }
+
+        /* Mouse-driven computer browsers always keep ten cards per row. */
+        @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+            :root {
+                --card-size: clamp(62px, 7.3vw, 80px);
+                --card-gap: 7px;
+            }
+
+            .game-container {
+                grid-template-columns: repeat(10, var(--card-size));
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header-container">
+    <div class="dropdown">
+        <button class="dropbtn" type="button" aria-expanded="false" aria-controls="day-dropdown">每日单词列表 ▼</button>
+        <div class="dropdown-content" id="day-dropdown" role="menu"></div>
+    </div>
+    <h1 id="game-title">IELTS Word Crush - Day 1</h1>
+    </div>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="pairs-left">30</div>
+            <div class="stat-label">剩余配对</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="timer">0</div>
+            <div class="stat-label">秒</div>
+        </div>
+    </div>
+    
+    <div class="game-container" id="game-container"></div>
+    
+    <button id="restart-btn">重新开始</button>
+    
+    <div class="modal" id="completion-modal">
+        <div class="modal-content">
+            <h2>🎉 恭喜完成今日背单词任务！</h2>
+            <p id="completion-message"></p>
+            <button id="close-modal">确定</button>
+        </div>
+    </div>
+    
+    <div class="copyright-banner">
+        <div class="copyright-marquee">
+            <span>DESIGNED & DEVELOPED BY</span>
+            <span class="copyright-owner">JIMMY WU</span>
+            <span>© <span class="copyright-year">2025 V1.5</span></span>
+        </div>
+    </div>
+    
+    <!-- Audio elements -->
+    <audio id="select-sound" src="files/click.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="files/click.mp3" preload="auto"></audio>
+    <audio id="match-sound" src="files/match.mp3" preload="auto"></audio>
+    <audio id="complete-sound" src="files/win.mp3" preload="auto"></audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // All word pairs for 60 days (25-30 pairs per day)
+            const allWordPairs = {
+                "Day 1": [
+                    { english: "charge", chinese: "收费" },
+                    { english: "gain", chinese: "获得" },
+                    { english: "reduce", chinese: "减少" },
+                    { english: "employment", chinese: "就业" },
+                    { english: "fleet", chinese: "车队" },
+                    { english: "opportunity", chinese: "机会" },
+                    { english: "despite", chinese: "尽管" },
+                    { english: "tolerate", chinese: "容忍" },
+                    { english: "practice", chinese: "实践" },
+                    { english: "monopoly", chinese: "垄断" },
+                    { english: "deter", chinese: "阻止" },
+                    { english: "barrier", chinese: "障碍" },
+                    { english: "community", chinese: "社区" },
+                    { english: "climate", chinese: "气候" },
+                    { english: "remain", chinese: "保持" },
+                    { english: "limit", chinese: "限制" },
+                    { english: "source", chinese: "来源" },
+                    { english: "essential", chinese: "必要的" },
+                    { english: "opinion", chinese: "意见" },
+                    { english: "grow", chinese: "增长" },
+                    { english: "choice", chinese: "选择" },
+                    { english: "negative", chinese: "消极的" },
+                    { english: "support", chinese: "支持" },
+                    { english: "rely", chinese: "依赖" },
+                    { english: "manage", chinese: "管理" },
+                    { english: "entrepreneurship", chinese: "创业" },
+                    { english: "patent", chinese: "专利" },
+                    { english: "trademark", chinese: "商标" },
+                    { english: "copyright", chinese: "版权" },
+                    { english: "bankruptcy", chinese: "破产" },
+                ],
+                "Day 2": [
+                    { english: "academic", chinese: "学术的" },
+                    { english: "achievement", chinese: "成就" },
+                    { english: "concentrate", chinese: "专注" },
+                    { english: "tuition", chinese: "学费" },
+                    { english: "instruct", chinese: "教学" },
+                    { english: "facilities", chinese: "设施" },
+                    { english: "visual", chinese: "视觉的" },
+                    { english: "qualification", chinese: "资格" },
+                    { english: "vocation", chinese: "职业" },
+                    { english: "vocational", chinese: "职业的" },
+                    { english: "potential", chinese: "潜力" },
+                    { english: "cultivate", chinese: "培养" },
+                    { english: "promote", chinese: "促进" },
+                    { english: "scholarship", chinese: "奖学金" },
+                    { english: "talent", chinese: "人才" },
+                    { english: "startup", chinese: "初创企业" },
+                    { english: "venture", chinese: "风险" },
+                    { english: "capital", chinese: "资本" },
+                    { english: "investor", chinese: "投资者" },
+                    { english: "prototype", chinese: "原型" },
+                    { english: "compulsory", chinese: "必修的" },
+                    { english: "selective", chinese: "选修的" },
+                    { english: "stimulate", chinese: "刺激" },
+                    { english: "inspire", chinese: "启发" },
+                    { english: "constrain", chinese: "限制" },
+                    { english: "priority", chinese: "优先" },
+                    { english: "strength", chinese: "优势" },
+                    { english: "advantage", chinese: "优点" },
+                    { english: "unique", chinese: "独特的" },
+                    { english: "tolerance", chinese: "宽容" }
+                ],
+                "Day 3": [
+                    { english: "risk", chinese: "风险" },
+                    { english: "consume", chinese: "消耗" },
+                    { english: "esteem", chinese: "自尊" },
+                    { english: "frustrate", chinese: "挫折" },
+                    { english: "motivate", chinese: "激励" },
+                    { english: "enthusiasm", chinese: "热情" },
+                    { english: "depression", chinese: "抑郁" },
+                    { english: "parenting", chinese: "育儿" },
+                    { english: "concern", chinese: "关心" },
+                    { english: "health", chinese: "健康" },
+                    { english: "leisure", chinese: "休闲" },
+                    { english: "physical", chinese: "身体的" },
+                    { english: "responsibility", chinese: "责任" },
+                    { english: "acquire", chinese: "获得" },
+                    { english: "communication", chinese: "交流" },
+                    { english: "focus", chinese: "专注" },
+                    { english: "peer", chinese: "同龄人" },
+                    { english: "feedback", chinese: "反馈" },
+                    { english: "evaluate", chinese: "评价" },
+                    { english: "curriculum", chinese: "课程" },
+                    { english: "behavior", chinese: "行为" },
+                    { english: "discipline", chinese: "纪律" },
+                    { english: "generalist", chinese: "通才" },
+                    { english: "specialist", chinese: "专才" },
+                    { english: "development", chinese: "发展" },
+                    { english: "resilience", chinese: "适应力" },
+                    { english: "cognitive", chinese: "认知的" },
+                    { english: "emotion", chinese: "情绪" },
+                    { english: "therapy", chinese: "治疗" },
+                    { english: "self-esteem", chinese: "自尊心" }
+                ],
+
+                "Day 4": [
+                    { english: "engineering", chinese: "工程" },
+                    { english: "science", chinese: "科学" },
+                    { english: "arts", chinese: "文科" },
+                    { english: "practical", chinese: "实用的" },
+                    { english: "theoretical", chinese: "理论的" },
+                    { english: "professional", chinese: "专业的" },
+                    { english: "applied", chinese: "应用的" },
+                    { english: "target", chinese: "目标" },
+                    { english: "creativity", chinese: "创造力" },
+                    { english: "conventional", chinese: "传统的" },
+                    { english: "require", chinese: "需要" },
+                    { english: "addict", chinese: "上瘾" },
+                    { english: "imagination", chinese: "想象" },
+                    { english: "flexibility", chinese: "灵活" },
+                    { english: "coordinate", chinese: "协调" },
+                    { english: "cognitive", chinese: "认知的" },
+                    { english: "creative", chinese: "创造性的" },
+                    { english: "manage", chinese: "管理" },
+                    { english: "organize", chinese: "组织" },
+                    { english: "problem", chinese: "问题" },
+                    { english: "decision", chinese: "决定" },
+                    { english: "motor", chinese: "运动" },
+                    { english: "social", chinese: "社会的" },
+                    { english: "sense", chinese: "感觉" },
+                    { english: "distract", chinese: "分心" },
+                    { english: "innovation", chinese: "创新" },
+                    { english: "experiment", chinese: "实验" },
+                    { english: "theory", chinese: "理论" },
+                    { english: "analysis", chinese: "分析" },
+                    { english: "technology", chinese: "技术" }
+                ],
+                "Day 5": [
+                    { english: "cooperate", chinese: "合作" },
+                    { english: "compete", chinese: "竞争" },
+                    { english: "broad", chinese: "宽广的" },
+                    { english: "narrow", chinese: "狭窄的" },
+                    { english: "obedient", chinese: "顺从的" },
+                    { english: "rebellious", chinese: "叛逆的" },
+                    { english: "change", chinese: "变化" },
+                    { english: "distance", chinese: "距离" },
+                    { english: "deliver", chinese: "交付" },
+                    { english: "content", chinese: "内容" },
+                    { english: "adjust", chinese: "调整" },
+                    { english: "electronic", chinese: "电子的" },
+                    { english: "enhance", chinese: "增强" },
+                    { english: "efficiency", chinese: "效率" },
+                    { english: "productivity", chinese: "生产力" },
+                    { english: "labor", chinese: "劳动" },
+                    { english: "create", chinese: "创造" },
+                    { english: "innovate", chinese: "创新" },
+                    { english: "military", chinese: "军事的" },
+                    { english: "global", chinese: "全球的" },
+                    { english: "urban", chinese: "城市的" },
+                    { english: "rural", chinese: "农村的" },
+                    { english: "hinder", chinese: "阻碍" },
+                    { english: "traffic", chinese: "交通" },
+                    { english: "congestion", chinese: "拥堵" },
+                    { english: "policy", chinese: "政策" },
+                    { english: "economy", chinese: "经济" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "investment", chinese: "投资" },
+                    { english: "regulation", chinese: "法规" }
+                ],
+                "Day 6": [
+                    { english: "fertilizer", chinese: "肥料" },
+                    { english: "modified", chinese: "修改的" },
+                    { english: "commute", chinese: "通勤" },
+                    { english: "clone", chinese: "克隆" },
+                    { english: "fatal", chinese: "致命的" },
+                    { english: "telecom", chinese: "电信" },
+                    { english: "space", chinese: "太空" },
+                    { english: "explore", chinese: "探索" },
+                    { english: "update", chinese: "更新" },
+                    { english: "addict", chinese: "上瘾" },
+                    { english: "eyesight", chinese: "视力" },
+                    { english: "available", chinese: "可用的" },
+                    { english: "dominant", chinese: "主导的" },
+                    { english: "action", chinese: "行动" },
+                    { english: "measure", chinese: "措施" },
+                    { english: "skyscraper", chinese: "摩天楼" },
+                    { english: "operate", chinese: "操作" },
+                    { english: "cost", chinese: "成本" },
+                    { english: "inconvenience", chinese: "不便" },
+                    { english: "supervise", chinese: "监督" },
+                    { english: "heredity", chinese: "遗传" },
+                    { english: "nurture", chinese: "培养" },
+                    { english: "commercial", chinese: "商业的" },
+                    { english: "economic", chinese: "经济的" },
+                    { english: "flexible", chinese: "灵活的" },
+                    { english: "innovation", chinese: "创新" },
+                    { english: "biotechnology", chinese: "生物技术" },
+                    { english: "automation", chinese: "自动化" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "sustainable", chinese: "可持续的" }
+                ],
+                "Day 7": [
+                    { english: "media", chinese: "媒体" },
+                    { english: "flood", chinese: "泛滥" },
+                    { english: "promotion", chinese: "促销" },
+                    { english: "visual", chinese: "视觉的" },
+                    { english: "vivid", chinese: "生动的" },
+                    { english: "audio", chinese: "音频" },
+                    { english: "video", chinese: "视频" },
+                    { english: "expose", chinese: "暴露" },
+                    { english: "imitate", chinese: "模仿" },
+                    { english: "prevalent", chinese: "普遍的" },
+                    { english: "censor", chinese: "审查" },
+                    { english: "regulate", chinese: "规范" },
+                    { english: "rigid", chinese: "严格的" },
+                    { english: "ethics", chinese: "道德" },
+                    { english: "reliable", chinese: "可靠的" },
+                    { english: "stereotype", chinese: "刻板" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "pornography", chinese: "色情" },
+                    { english: "detail", chinese: "细节" },
+                    { english: "impulsive", chinese: "冲动的" },
+                    { english: "celebrity", chinese: "名人" },
+                    { english: "journalist", chinese: "记者" },
+                    { english: "hype", chinese: "炒作" },
+                    { english: "privacy", chinese: "隐私" },
+                    { english: "cover", chinese: "报道" },
+                    { english: "broadcast", chinese: "广播" },
+                    { english: "advertisement", chinese: "广告" },
+                    { english: "subscription", chinese: "订阅" },
+                    { english: "influence", chinese: "影响" },
+                    { english: "headline", chinese: "头条" }
+                ],
+                "Day 8": [
+                    { english: "mislead", chinese: "误导" },
+                    { english: "distort", chinese: "扭曲" },
+                    { english: "false", chinese: "虚假的" },
+                    { english: "informative", chinese: "信息丰富的" },
+                    { english: "broadcast", chinese: "广播" },
+                    { english: "adventure", chinese: "冒险" },
+                    { english: "manufacture", chinese: "制造" },
+                    { english: "consumer", chinese: "消费者" },
+                    { english: "leaflet", chinese: "传单" },
+                    { english: "restrict", chinese: "限制" },
+                    { english: "stimulate", chinese: "刺激" },
+                    { english: "consumption", chinese: "消费" },
+                    { english: "violate", chinese: "违反" },
+                    { english: "dominate", chinese: "支配" },
+                    { english: "objective", chinese: "客观的" },
+                    { english: "biased", chinese: "有偏见的" },
+                    { english: "subjective", chinese: "主观的" },
+                    { english: "environment", chinese: "环境" },
+                    { english: "population", chinese: "人口" },
+                    { english: "overcrowd", chinese: "过度拥挤" },
+                    { english: "deteriorate", chinese: "恶化" },
+                    { english: "friendly", chinese: "友好的" },
+                    { english: "ecosystem", chinese: "生态系统" },
+                    { english: "balance", chinese: "平衡" },
+                    { english: "breakdown", chinese: "故障" },
+                    { english: "pollution", chinese: "污染" },
+                    { english: "waste", chinese: "浪费" },
+                    { english: "hazard", chinese: "危险" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "conservation", chinese: "保护" }
+                ],
+                "Day 9": [
+                    { english: "wildlife", chinese: "野生动物" },
+                    { english: "survival", chinese: "生存" },
+                    { english: "resource", chinese: "资源" },
+                    { english: "jeopardize", chinese: "危害" },
+                    { english: "endanger", chinese: "濒危" },
+                    { english: "extinct", chinese: "灭绝" },
+                    { english: "threat", chinese: "威胁" },
+                    { english: "genetic", chinese: "遗传的" },
+                    { english: "habitat", chinese: "栖息地" },
+                    { english: "selection", chinese: "选择" },
+                    { english: "sustainable", chinese: "可持续的" },
+                    { english: "greenhouse", chinese: "温室" },
+                    { english: "warming", chinese: "变暖" },
+                    { english: "awareness", chinese: "意识" },
+                    { english: "preserve", chinese: "保护" },
+                    { english: "prohibit", chinese: "禁止" },
+                    { english: "conserve", chinese: "保存" },
+                    { english: "advocate", chinese: "提倡" },
+                    { english: "cycle", chinese: "循环" },
+                    { english: "enable", chinese: "使能够" },
+                    { english: "luxury", chinese: "奢侈品" },
+                    { english: "rubbish", chinese: "垃圾" },
+                    { english: "classify", chinese: "分类" },
+                    { english: "seasonal", chinese: "季节性的" },
+                    { english: "condemn", chinese: "谴责" },
+                    { english: "deforestation", chinese: "森林砍伐" },
+                    { english: "pollutant", chinese: "污染物" },
+                    { english: "ecosystem", chinese: "生态系统" },
+                    { english: "biodiversity", chinese: "生物多样性" },
+                    { english: "recycle", chinese: "回收" }
+                ],
+                "Day 10": [
+                    { english: "mass", chinese: "大量的" },
+                    { english: "scale", chinese: "规模" },
+                    { english: "refrigerator", chinese: "冰箱" },
+                    { english: "purify", chinese: "净化" },
+                    { english: "recycle", chinese: "回收" },
+                    { english: "desalinate", chinese: "淡化" },
+                    { english: "resort", chinese: "手段" },
+                    { english: "feasible", chinese: "可行的" },
+                    { english: "energy", chinese: "能源" },
+                    { english: "crisis", chinese: "危机" },
+                    { english: "shortage", chinese: "短缺" },
+                    { english: "raw", chinese: "原始的" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "scarcity", chinese: "稀缺" },
+                    { english: "appliance", chinese: "器具" },
+                    { english: "generate", chinese: "产生" },
+                    { english: "major", chinese: "主要的" },
+                    { english: "emission", chinese: "排放" },
+                    { english: "carbon", chinese: "碳" },
+                    { english: "toxic", chinese: "有毒的" },
+                    { english: "chemical", chinese: "化学的" },
+                    { english: "waste", chinese: "废物" },
+                    { english: "decompose", chinese: "分解" },
+                    { english: "sewage", chinese: "污水" },
+                    { english: "discharge", chinese: "排放" },
+                    { english: "pollution", chinese: "污染" },
+                    { english: "conservation", chinese: "保护" },
+                    { english: "environmental", chinese: "环境的" },
+                    { english: "hazardous", chinese: "危险的" },
+                    { english: "effluent", chinese: "排放物" }
+                ],
+                "Day 11": [
+                    { english: "alternative", chinese: "替代的" },
+                    { english: "clean", chinese: "清洁的" },
+                    { english: "solar", chinese: "太阳的" },
+                    { english: "hydro", chinese: "水力的" },
+                    { english: "grid", chinese: "电网" },
+                    { english: "fossil", chinese: "化石" },
+                    { english: "fuel", chinese: "燃料" },
+                    { english: "dispose", chinese: "处理" },
+                    { english: "treatment", chinese: "处理" },
+                    { english: "lower", chinese: "降低" },
+                    { english: "control", chinese: "控制" },
+                    { english: "exhaust", chinese: "耗尽" },
+                    { english: "arable", chinese: "可耕的" },
+                    { english: "deforest", chinese: "砍伐" },
+                    { english: "reforest", chinese: "造林" },
+                    { english: "purchase", chinese: "购买" },
+                    { english: "consume", chinese: "消费" },
+                    { english: "fertile", chinese: "肥沃的" },
+                    { english: "infertile", chinese: "贫瘠的" },
+                    { english: "minimum", chinese: "最小的" },
+                    { english: "maximum", chinese: "最大的" },
+                    { english: "minimize", chinese: "最小化" },
+                    { english: "maximize", chinese: "最大化" },
+                    { english: "arms", chinese: "武器" },
+                    { english: "race", chinese: "竞赛" }
+                ],
+                "Day 12": [
+                    { english: "rights", chinese: "权利" },
+                    { english: "monitor", chinese: "监控" },
+                    { english: "regulation", chinese: "法规" },
+                    { english: "wealth", chinese: "财富" },
+                    { english: "gap", chinese: "差距" },
+                    { english: "advantage", chinese: "优势" },
+                    { english: "poverty", chinese: "贫困" },
+                    { english: "instability", chinese: "不稳定" },
+                    { english: "income", chinese: "收入" },
+                    { english: "insurance", chinese: "保险" },
+                    { english: "tax", chinese: "税" },
+                    { english: "impose", chinese: "征收" },
+                    { english: "welfare", chinese: "福利" },
+                    { english: "budget", chinese: "预算" },
+                    { english: "healthcare", chinese: "医疗" },
+                    { english: "employment", chinese: "就业" },
+                    { english: "charity", chinese: "慈善" },
+                    { english: "donate", chinese: "捐赠" },
+                    { english: "allocate", chinese: "分配" },
+                    { english: "authority", chinese: "当局" },
+                    { english: "invest", chinese: "投资" },
+                    { english: "democratic", chinese: "民主的" },
+                    { english: "laid-off", chinese: "下岗" },
+                    { english: "downsize", chinese: "精简" },
+                    { english: "financial", chinese: "财政的" }
+                ],
+                "Day 13": [
+                    { english: "support", chinese: "支持" },
+                    { english: "friendship", chinese: "友谊" },
+                    { english: "nation", chinese: "国家" },
+                    { english: "lessen", chinese: "减少" },
+                    { english: "tension", chinese: "紧张" },
+                    { english: "remove", chinese: "移除" },
+                    { english: "prejudice", chinese: "偏见" },
+                    { english: "bias", chinese: "偏见" },
+                    { english: "enhance", chinese: "增强" },
+                    { english: "mutual", chinese: "相互的" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "vicious", chinese: "恶性的" },
+                    { english: "virtuous", chinese: "良性的" },
+                    { english: "work", chinese: "工作" },
+                    { english: "pressure", chinese: "压力" },
+                    { english: "ease", chinese: "缓解" },
+                    { english: "deprive", chinese: "剥夺" },
+                    { english: "mental", chinese: "精神的" },
+                    { english: "overload", chinese: "超载" },
+                    { english: "pace", chinese: "步伐" },
+                    { english: "accelerate", chinese: "加速" },
+                    { english: "eliminate", chinese: "消除" },
+                    { english: "commodity", chinese: "商品" },
+                    { english: "entertain", chinese: "娱乐" },
+                    { english: "material", chinese: "物质的" }
+                ],
+                "Day 14": [
+                    { english: "enrich", chinese: "丰富" },
+                    { english: "experience", chinese: "经验" },
+                    { english: "historic", chinese: "历史的" },
+                    { english: "significance", chinese: "意义" },
+                    { english: "aesthetic", chinese: "美学的" },
+                    { english: "demolish", chinese: "拆除" },
+                    { english: "expectancy", chinese: "预期" },
+                    { english: "purchase", chinese: "购买" },
+                    { english: "consume", chinese: "消费" },
+                    { english: "fertile", chinese: "肥沃的" },
+                    { english: "infertile", chinese: "贫瘠的" },
+                    { english: "minimum", chinese: "最小的" },
+                    { english: "maximum", chinese: "最大的" },
+                    { english: "minimize", chinese: "最小化" },
+                    { english: "maximize", chinese: "最大化" },
+                    { english: "arms", chinese: "武器" },
+                    { english: "race", chinese: "竞赛" },
+                    { english: "rights", chinese: "权利" },
+                    { english: "monitor", chinese: "监控" },
+                    { english: "regulation", chinese: "法规" },
+                    { english: "wealth", chinese: "财富" },
+                    { english: "gap", chinese: "差距" },
+                    { english: "advantage", chinese: "优势" },
+                    { english: "poverty", chinese: "贫困" },
+                    { english: "instability", chinese: "不稳定" }
+                ],
+                "Day 15": [
+                    { english: "income", chinese: "收入" },
+                    { english: "insurance", chinese: "保险" },
+                    { english: "tax", chinese: "税" },
+                    { english: "impose", chinese: "征收" },
+                    { english: "welfare", chinese: "福利" },
+                    { english: "budget", chinese: "预算" },
+                    { english: "healthcare", chinese: "医疗" },
+                    { english: "employment", chinese: "就业" },
+                    { english: "charity", chinese: "慈善" },
+                    { english: "donate", chinese: "捐赠" },
+                    { english: "allocate", chinese: "分配" },
+                    { english: "authority", chinese: "当局" },
+                    { english: "invest", chinese: "投资" },
+                    { english: "democratic", chinese: "民主的" },
+                    { english: "laid-off", chinese: "下岗" },
+                    { english: "downsize", chinese: "精简" },
+                    { english: "financial", chinese: "财政的" },
+                    { english: "support", chinese: "支持" },
+                    { english: "friendship", chinese: "友谊" },
+                    { english: "nation", chinese: "国家" },
+                    { english: "lessen", chinese: "减少" },
+                    { english: "tension", chinese: "紧张" },
+                    { english: "remove", chinese: "移除" },
+                    { english: "prejudice", chinese: "偏见" },
+                    { english: "bias", chinese: "偏见" }
+                ],
+                "Day 16": [
+                    { english: "enhance", chinese: "增强" },
+                    { english: "mutual", chinese: "相互的" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "vicious", chinese: "恶性的" },
+                    { english: "virtuous", chinese: "良性的" },
+                    { english: "work", chinese: "工作" },
+                    { english: "pressure", chinese: "压力" },
+                    { english: "ease", chinese: "缓解" },
+                    { english: "deprive", chinese: "剥夺" },
+                    { english: "mental", chinese: "精神的" },
+                    { english: "overload", chinese: "超载" },
+                    { english: "pace", chinese: "步伐" },
+                    { english: "accelerate", chinese: "加速" },
+                    { english: "eliminate", chinese: "消除" },
+                    { english: "commodity", chinese: "商品" },
+                    { english: "entertain", chinese: "娱乐" },
+                    { english: "material", chinese: "物质的" },
+                    { english: "alienation", chinese: "疏远" },
+                    { english: "bond", chinese: "纽带" },
+                    { english: "belonging", chinese: "归属感" },
+                    { english: "single-parent", chinese: "单亲" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "trivial", chinese: "琐事" },
+                    { english: "diabetes", chinese: "糖尿病" },
+                    { english: "carbohydrate", chinese: "碳水化合物" }
+                ],
+                "Day 17": [
+                    { english: "heartache", chinese: "心脏病" },
+                    { english: "hypertension", chinese: "高血压" },
+                    { english: "balance", chinese: "平衡" },
+                    { english: "reconcile", chinese: "调和" },
+                    { english: "attitude", chinese: "态度" },
+                    { english: "protein", chinese: "蛋白质" },
+                    { english: "vitamin", chinese: "维生素" },
+                    { english: "distance", chinese: "距离" },
+                    { english: "basketball", chinese: "篮球" },
+                    { english: "gymnasium", chinese: "健身房" },
+                    { english: "membership", chinese: "会员" },
+                    { english: "jogging", chinese: "慢跑" },
+                    { english: "campaign", chinese: "活动" },
+                    { english: "diet", chinese: "饮食" },
+                    { english: "fat", chinese: "脂肪" },
+                    { english: "fiber", chinese: "纤维" },
+                    { english: "positive", chinese: "积极的" },
+                    { english: "negative", chinese: "消极的" },
+                    { english: "optimistic", chinese: "乐观的" },
+                    { english: "pessimistic", chinese: "悲观的" },
+                    { english: "obesity", chinese: "肥胖症" },
+                    { english: "overweight", chinese: "超重的" },
+                    { english: "crime", chinese: "犯罪" },
+                    { english: "legal", chinese: "法律的" },
+                    { english: "legislate", chinese: "立法" }
+                ],
+                "Day 18": [
+                    { english: "commit", chinese: "犯(罪)" },
+                    { english: "criminal", chinese: "罪犯" },
+                    { english: "rate", chinese: "比率" },
+                    { english: "kidnap", chinese: "绑架" },
+                    { english: "theft", chinese: "偷窃" },
+                    { english: "revenge", chinese: "报复" },
+                    { english: "enact", chinese: "颁布" },
+                    { english: "enforce", chinese: "执行" },
+                    { english: "victim", chinese: "受害者" },
+                    { english: "serial", chinese: "连续的" },
+                    { english: "abide", chinese: "遵守" },
+                    { english: "comply", chinese: "遵从" },
+                    { english: "tendency", chinese: "倾向" },
+                    { english: "security", chinese: "安全" },
+                    { english: "stability", chinese: "稳定" },
+                    { english: "justice", chinese: "正义" },
+                    { english: "imprison", chinese: "监禁" },
+                    { english: "punish", chinese: "惩罚" },
+                    { english: "flaw", chinese: "缺陷" },
+                    { english: "burden", chinese: "负担" },
+                    { english: "regard", chinese: "看待" },
+                    { english: "compassion", chinese: "同情" },
+                    { english: "discrimination", chinese: "歧视" },
+                    { english: "distinguish", chinese: "区分" },
+                    { english: "imaginary", chinese: "想象的" }
+                ],
+                "Day 19": [
+                    { english: "resort", chinese: "诉诸" },
+                    { english: "domestic", chinese: "家庭的" },
+                    { english: "gang", chinese: "团伙" },
+                    { english: "influence", chinese: "影响" },
+                    { english: "offender", chinese: "违法者" },
+                    { english: "repeat", chinese: "重复" },
+                    { english: "cultural", chinese: "文化的" },
+                    { english: "conflict", chinese: "冲突" },
+                    { english: "tourist", chinese: "游客" },
+                    { english: "destination", chinese: "目的地" },
+                    { english: "commercialize", chinese: "商业化" },
+                    { english: "various", chinese: "多样的" },
+                    { english: "aspect", chinese: "方面" },
+                    { english: "assimilation", chinese: "同化" },
+                    { english: "diversity", chinese: "多样性" },
+                    { english: "shock", chinese: "冲击" },
+                    { english: "identity", chinese: "身份" },
+                    { english: "dialect", chinese: "方言" },
+                    { english: "lesser-known", chinese: "鲜为人知的" },
+                    { english: "ancestor", chinese: "祖先" },
+                    { english: "ethnic", chinese: "民族的" },
+                    { english: "minority", chinese: "少数" },
+                    { english: "integration", chinese: "融合" },
+                    { english: "splendid", chinese: "辉煌的" },
+                    { english: "satisfy", chinese: "满足" }
+                ],
+                "Day 20": [
+                    { english: "curiosity", chinese: "好奇心" },
+                    { english: "distinct", chinese: "独特的" },
+                    { english: "broaden", chinese: "拓宽" },
+                    { english: "horizon", chinese: "视野" },
+                    { english: "extend", chinese: "扩展" },
+                    { english: "outlook", chinese: "观点" },
+                    { english: "enrich", chinese: "丰富" },
+                    { english: "knowledge", chinese: "知识" },
+                    { english: "historic", chinese: "历史的" },
+                    { english: "significance", chinese: "意义" },
+                    { english: "aesthetic", chinese: "美学的" },
+                    { english: "value", chinese: "价值" },
+                    { english: "demolish", chinese: "拆除" },
+                    { english: "knock", chinese: "敲击" },
+                    { english: "expectancy", chinese: "预期" },
+                    { english: "life", chinese: "生命" },
+                    { english: "purchase", chinese: "购买" },
+                    { english: "consume", chinese: "消费" },
+                    { english: "fertile", chinese: "肥沃的" },
+                    { english: "infertile", chinese: "贫瘠的" },
+                    { english: "minimum", chinese: "最小的" },
+                    { english: "maximum", chinese: "最大的" },
+                    { english: "minimize", chinese: "最小化" },
+                    { english: "maximize", chinese: "最大化" },
+                    { english: "arms", chinese: "武器" }
+                ],
+                "Day 21": [
+                    { english: "architecture", chinese: "建筑" },
+                    { english: "construction", chinese: "建设" },
+                    { english: "urban", chinese: "城市的" },
+                    { english: "rural", chinese: "农村的" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "skyscraper", chinese: "摩天楼" },
+                    { english: "sustainable", chinese: "可持续的" },
+                    { english: "renovation", chinese: "翻新" },
+                    { english: "preservation", chinese: "保护" },
+                    { english: "demolition", chinese: "拆除" },
+                    { english: "landmark", chinese: "地标" },
+                    { english: "facility", chinese: "设施" },
+                    { english: "transport", chinese: "交通" },
+                    { english: "pedestrian", chinese: "行人" },
+                    { english: "community", chinese: "社区" },
+                    { english: "residential", chinese: "住宅的" },
+                    { english: "commercial", chinese: "商业的" },
+                    { english: "suburb", chinese: "郊区" },
+                    { english: "metropolis", chinese: "大都市" },
+                    { english: "migration", chinese: "迁移" },
+                    { english: "density", chinese: "密度" },
+                    { english: "expansion", chinese: "扩张" },
+                    { english: "pollution", chinese: "污染" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "ecology", chinese: "生态" }
+                ],
+                "Day 22": [
+                    { english: "biodiversity", chinese: "生物多样性" },
+                    { english: "ecosystem", chinese: "生态系统" },
+                    { english: "deforestation", chinese: "森林砍伐" },
+                    { english: "conservation", chinese: "保护" },
+                    { english: "emission", chinese: "排放" },
+                    { english: "carbon", chinese: "碳" },
+                    { english: "footprint", chinese: "足迹" },
+                    { english: "recycle", chinese: "回收" },
+                    { english: "solar", chinese: "太阳的" },
+                    { english: "wind", chinese: "风" },
+                    { english: "energy", chinese: "能源" },
+                    { english: "fossil", chinese: "化石" },
+                    { english: "fuel", chinese: "燃料" },
+                    { english: "consumption", chinese: "消耗" },
+                    { english: "sustainable", chinese: "可持续的" },
+                    { english: "organic", chinese: "有机的" },
+                    { english: "contamination", chinese: "污染" },
+                    { english: "habitat", chinese: "栖息地" },
+                    { english: "extinction", chinese: "灭绝" },
+                    { english: "endangered", chinese: "濒危的" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "disposable", chinese: "一次性的" },
+                    { english: "biodegradable", chinese: "可降解的" },
+                    { english: "sustainability", chinese: "可持续性" },
+                    { english: "environmental", chinese: "环境的" }
+                ],
+                "Day 23": [
+                    { english: "globalization", chinese: "全球化" },
+                    { english: "multinational", chinese: "跨国的" },
+                    { english: "economy", chinese: "经济" },
+                    { english: "trade", chinese: "贸易" },
+                    { english: "import", chinese: "进口" },
+                    { english: "export", chinese: "出口" },
+                    { english: "tariff", chinese: "关税" },
+                    { english: "investment", chinese: "投资" },
+                    { english: "currency", chinese: "货币" },
+                    { english: "market", chinese: "市场" },
+                    { english: "competition", chinese: "竞争" },
+                    { english: "monopoly", chinese: "垄断" },
+                    { english: "consumer", chinese: "消费者" },
+                    { english: "demand", chinese: "需求" },
+                    { english: "supply", chinese: "供应" },
+                    { english: "inflation", chinese: "通货膨胀" },
+                    { english: "recession", chinese: "衰退" },
+                    { english: "unemployment", chinese: "失业" },
+                    { english: "productivity", chinese: "生产力" },
+                    { english: "efficiency", chinese: "效率" },
+                    { english: "outsourcing", chinese: "外包" },
+                    { english: "automation", chinese: "自动化" },
+                    { english: "innovation", chinese: "创新" },
+                    { english: "entrepreneur", chinese: "企业家" },
+                    { english: "startup", chinese: "初创企业" }
+                ],
+                "Day 24": [
+                    { english: "technology", chinese: "技术" },
+                    { english: "digital", chinese: "数字的" },
+                    { english: "virtual", chinese: "虚拟的" },
+                    { english: "artificial", chinese: "人工的" },
+                    { english: "intelligence", chinese: "智能" },
+                    { english: "robot", chinese: "机器人" },
+                    { english: "automation", chinese: "自动化" },
+                    { english: "software", chinese: "软件" },
+                    { english: "hardware", chinese: "硬件" },
+                    { english: "program", chinese: "程序" },
+                    { english: "algorithm", chinese: "算法" },
+                    { english: "data", chinese: "数据" },
+                    { english: "privacy", chinese: "隐私" },
+                    { english: "security", chinese: "安全" },
+                    { english: "network", chinese: "网络" },
+                    { english: "cyber", chinese: "网络的" },
+                    { english: "innovation", chinese: "创新" },
+                    { english: "invention", chinese: "发明" },
+                    { english: "device", chinese: "设备" },
+                    { english: "gadget", chinese: "小工具" },
+                    { english: "wireless", chinese: "无线的" },
+                    { english: "cloud", chinese: "云" },
+                    { english: "blockchain", chinese: "区块链" },
+                    { english: "interface", chinese: "界面" },
+                    { english: "database", chinese: "数据库" }
+                ],
+                "Day 25": [
+                    { english: "healthcare", chinese: "医疗" },
+                    { english: "medicine", chinese: "医学" },
+                    { english: "treatment", chinese: "治疗" },
+                    { english: "prevention", chinese: "预防" },
+                    { english: "vaccine", chinese: "疫苗" },
+                    { english: "surgery", chinese: "手术" },
+                    { english: "therapy", chinese: "疗法" },
+                    { english: "nutrition", chinese: "营养" },
+                    { english: "exercise", chinese: "锻炼" },
+                    { english: "obesity", chinese: "肥胖" },
+                    { english: "mental", chinese: "精神的" },
+                    { english: "stress", chinese: "压力" },
+                    { english: "depression", chinese: "抑郁" },
+                    { english: "anxiety", chinese: "焦虑" },
+                    { english: "addiction", chinese: "成瘾" },
+                    { english: "recovery", chinese: "康复" },
+                    { english: "hygiene", chinese: "卫生" },
+                    { english: "sanitation", chinese: "卫生设施" },
+                    { english: "epidemic", chinese: "流行病" },
+                    { english: "pandemic", chinese: "大流行病" },
+                    { english: "immunity", chinese: "免疫力" },
+                    { english: "chronic", chinese: "慢性的" },
+                    { english: "diagnosis", chinese: "诊断" },
+                    { english: "symptom", chinese: "症状" },
+                    { english: "prescription", chinese: "处方" }
+                ],
+                "Day 26": [
+                    { english: "education", chinese: "教育" },
+                    { english: "academic", chinese: "学术的" },
+                    { english: "curriculum", chinese: "课程" },
+                    { english: "pedagogy", chinese: "教学法" },
+                    { english: "literacy", chinese: "识字" },
+                    { english: "tuition", chinese: "学费" },
+                    { english: "scholarship", chinese: "奖学金" },
+                    { english: "discipline", chinese: "纪律" },
+                    { english: "assessment", chinese: "评估" },
+                    { english: "qualification", chinese: "资格" },
+                    { english: "vocational", chinese: "职业的" },
+                    { english: "kindergarten", chinese: "幼儿园" },
+                    { english: "primary", chinese: "初级的" },
+                    { english: "secondary", chinese: "中级的" },
+                    { english: "tertiary", chinese: "高等的" },
+                    { english: "distance", chinese: "远程的" },
+                    { english: "online", chinese: "在线的" },
+                    { english: "interactive", chinese: "互动的" },
+                    { english: "critical", chinese: "批判的" },
+                    { english: "creativity", chinese: "创造力" },
+                    { english: "motivation", chinese: "动机" },
+                    { english: "achievement", chinese: "成就" },
+                    { english: "performance", chinese: "表现" },
+                    { english: "plagiarism", chinese: "抄袭" },
+                    { english: "faculty", chinese: "院系" }
+                ],
+                "Day 27": [
+                    { english: "culture", chinese: "文化" },
+                    { english: "tradition", chinese: "传统" },
+                    { english: "heritage", chinese: "遗产" },
+                    { english: "custom", chinese: "习俗" },
+                    { english: "diversity", chinese: "多样性" },
+                    { english: "identity", chinese: "身份" },
+                    { english: "ethnic", chinese: "民族的" },
+                    { english: "minority", chinese: "少数民族" },
+                    { english: "indigenous", chinese: "本土的" },
+                    { english: "global", chinese: "全球的" },
+                    { english: "art", chinese: "艺术" },
+                    { english: "music", chinese: "音乐" },
+                    { english: "dance", chinese: "舞蹈" },
+                    { english: "literature", chinese: "文学" },
+                    { english: "museum", chinese: "博物馆" },
+                    { english: "gallery", chinese: "画廊" },
+                    { english: "festival", chinese: "节日" },
+                    { english: "ceremony", chinese: "仪式" },
+                    { english: "ritual", chinese: "仪式" },
+                    { english: "language", chinese: "语言" },
+                    { english: "dialect", chinese: "方言" },
+                    { english: "bilingual", chinese: "双语的" },
+                    { english: "multicultural", chinese: "多元文化的" },
+                    { english: "assimilation", chinese: "同化" },
+                    { english: "integration", chinese: "融合" }
+                ],
+                "Day 28": [
+                    { english: "government", chinese: "政府" },
+                    { english: "policy", chinese: "政策" },
+                    { english: "democracy", chinese: "民主" },
+                    { english: "election", chinese: "选举" },
+                    { english: "vote", chinese: "投票" },
+                    { english: "parliament", chinese: "议会" },
+                    { english: "congress", chinese: "国会" },
+                    { english: "senate", chinese: "参议院" },
+                    { english: "legislation", chinese: "立法" },
+                    { english: "regulation", chinese: "法规" },
+                    { english: "taxation", chinese: "税收" },
+                    { english: "budget", chinese: "预算" },
+                    { english: "welfare", chinese: "福利" },
+                    { english: "pension", chinese: "养老金" },
+                    { english: "subsidy", chinese: "补贴" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "military", chinese: "军事的" },
+                    { english: "defense", chinese: "防御" },
+                    { english: "diplomacy", chinese: "外交" },
+                    { english: "treaty", chinese: "条约" },
+                    { english: "alliance", chinese: "联盟" },
+                    { english: "sanction", chinese: "制裁" },
+                    { english: "embassy", chinese: "大使馆" },
+                    { english: "immigration", chinese: "移民" },
+                    { english: "citizenship", chinese: "公民身份" }
+                ],
+                "Day 29": [
+                    { english: "crime", chinese: "犯罪" },
+                    { english: "law", chinese: "法律" },
+                    { english: "justice", chinese: "正义" },
+                    { english: "court", chinese: "法庭" },
+                    { english: "judge", chinese: "法官" },
+                    { english: "jury", chinese: "陪审团" },
+                    { english: "trial", chinese: "审判" },
+                    { english: "evidence", chinese: "证据" },
+                    { english: "witness", chinese: "证人" },
+                    { english: "verdict", chinese: "裁决" },
+                    { english: "sentence", chinese: "判决" },
+                    { english: "prison", chinese: "监狱" },
+                    { english: "reform", chinese: "改革" },
+                    { english: "rehabilitation", chinese: "康复" },
+                    { english: "victim", chinese: "受害者" },
+                    { english: "offender", chinese: "罪犯" },
+                    { english: "burglary", chinese: "入室盗窃" },
+                    { english: "theft", chinese: "偷窃" },
+                    { english: "fraud", chinese: "欺诈" },
+                    { english: "corruption", chinese: "腐败" },
+                    { english: "bribery", chinese: "贿赂" },
+                    { english: "cybercrime", chinese: "网络犯罪" },
+                    { english: "terrorism", chinese: "恐怖主义" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "prevention", chinese: "预防" }
+                ],
+                "Day 30": [
+                    { english: "media", chinese: "媒体" },
+                    { english: "journalism", chinese: "新闻业" },
+                    { english: "press", chinese: "新闻界" },
+                    { english: "broadcast", chinese: "广播" },
+                    { english: "television", chinese: "电视" },
+                    { english: "radio", chinese: "收音机" },
+                    { english: "newspaper", chinese: "报纸" },
+                    { english: "magazine", chinese: "杂志" },
+                    { english: "internet", chinese: "互联网" },
+                    { english: "social", chinese: "社交的" },
+                    { english: "network", chinese: "网络" },
+                    { english: "blog", chinese: "博客" },
+                    { english: "vlog", chinese: "视频博客" },
+                    { english: "podcast", chinese: "播客" },
+                    { english: "influence", chinese: "影响" },
+                    { english: "celebrity", chinese: "名人" },
+                    { english: "advertisement", chinese: "广告" },
+                    { english: "propaganda", chinese: "宣传" },
+                    { english: "censorship", chinese: "审查" },
+                    { english: "fake", chinese: "假的" },
+                    { english: "bias", chinese: "偏见" },
+                    { english: "objective", chinese: "客观的" },
+                    { english: "subjective", chinese: "主观的" },
+                    { english: "reliable", chinese: "可靠的" },
+                    { english: "credible", chinese: "可信的" }
+                ],
+                "Day 31": [
+                    { english: "global", chinese: "全球的" },
+                    { english: "international", chinese: "国际的" },
+                    { english: "cooperation", chinese: "合作" },
+                    { english: "treaty", chinese: "条约" },
+                    { english: "sanction", chinese: "制裁" },
+                    { english: "summit", chinese: "峰会" },
+                    { english: "diplomacy", chinese: "外交" },
+                    { english: "embassy", chinese: "大使馆" },
+                    { english: "visa", chinese: "签证" },
+                    { english: "immigration", chinese: "移民" },
+                    { english: "refugee", chinese: "难民" },
+                    { english: "asylum", chinese: "庇护" },
+                    { english: "border", chinese: "边境" },
+                    { english: "tariff", chinese: "关税" },
+                    { english: "export", chinese: "出口" },
+                    { english: "import", chinese: "进口" },
+                    { english: "quota", chinese: "配额" },
+                    { english: "subsidy", chinese: "补贴" },
+                    { english: "sanction", chinese: "制裁" },
+                    { english: "alliance", chinese: "联盟" },
+                    { english: "negotiation", chinese: "谈判" },
+                    { english: "conflict", chinese: "冲突" },
+                    { english: "tension", chinese: "紧张" },
+                    { english: "resolution", chinese: "决议" },
+                    { english: "intervention", chinese: "干预" }
+                ],
+                "Day 32": [
+                    { english: "agriculture", chinese: "农业" },
+                    { english: "cultivate", chinese: "耕种" },
+                    { english: "harvest", chinese: "收获" },
+                    { english: "irrigation", chinese: "灌溉" },
+                    { english: "fertilizer", chinese: "肥料" },
+                    { english: "pesticide", chinese: "杀虫剂" },
+                    { english: "organic", chinese: "有机的" },
+                    { english: "genetic", chinese: "基因的" },
+                    { english: "modification", chinese: "修改" },
+                    { english: "livestock", chinese: "牲畜" },
+                    { english: "dairy", chinese: "乳制品" },
+                    { english: "pasture", chinese: "牧场" },
+                    { english: "arable", chinese: "可耕的" },
+                    { english: "yield", chinese: "产量" },
+                    { english: "drought", chinese: "干旱" },
+                    { english: "famine", chinese: "饥荒" },
+                    { english: "subsistence", chinese: "生存" },
+                    { english: "plantation", chinese: "种植园" },
+                    { english: "horticulture", chinese: "园艺" },
+                    { english: "hybrid", chinese: "杂交" },
+                    { english: "sustainable", chinese: "可持续的" },
+                    { english: "deforestation", chinese: "砍伐森林" },
+                    { english: "soil", chinese: "土壤" },
+                    { english: "erosion", chinese: "侵蚀" },
+                    { english: "conservation", chinese: "保护" }
+                ],
+                "Day 33": [
+                    { english: "manufacturing", chinese: "制造业" },
+                    { english: "assembly", chinese: "组装" },
+                    { english: "automation", chinese: "自动化" },
+                    { english: "robot", chinese: "机器人" },
+                    { english: "productivity", chinese: "生产力" },
+                    { english: "efficiency", chinese: "效率" },
+                    { english: "outsourcing", chinese: "外包" },
+                    { english: "offshore", chinese: "离岸" },
+                    { english: "labor", chinese: "劳动力" },
+                    { english: "union", chinese: "工会" },
+                    { english: "strike", chinese: "罢工" },
+                    { english: "wage", chinese: "工资" },
+                    { english: "benefit", chinese: "福利" },
+                    { english: "pension", chinese: "养老金" },
+                    { english: "layoff", chinese: "裁员" },
+                    { english: "unemployment", chinese: "失业" },
+                    { english: "retrain", chinese: "再培训" },
+                    { english: "skilled", chinese: "熟练的" },
+                    { english: "apprentice", chinese: "学徒" },
+                    { english: "factory", chinese: "工厂" },
+                    { english: "warehouse", chinese: "仓库" },
+                    { english: "inventory", chinese: "库存" },
+                    { english: "logistics", chinese: "物流" },
+                    { english: "supply", chinese: "供应" },
+                    { english: "chain", chinese: "链条" }
+                ],
+                "Day 34": [
+                    { english: "tourism", chinese: "旅游业" },
+                    { english: "hospitality", chinese: "酒店业" },
+                    { english: "accommodation", chinese: "住宿" },
+                    { english: "resort", chinese: "度假村" },
+                    { english: "itinerary", chinese: "行程" },
+                    { english: "souvenir", chinese: "纪念品" },
+                    { english: "heritage", chinese: "遗产" },
+                    { english: "ecotourism", chinese: "生态旅游" },
+                    { english: "backpacker", chinese: "背包客" },
+                    { english: "visitor", chinese: "游客" },
+                    { english: "attraction", chinese: "景点" },
+                    { english: "landmark", chinese: "地标" },
+                    { english: "guide", chinese: "导游" },
+                    { english: "brochure", chinese: "小册子" },
+                    { english: "itinerary", chinese: "行程" },
+                    { english: "passport", chinese: "护照" },
+                    { english: "visa", chinese: "签证" },
+                    { english: "customs", chinese: "海关" },
+                    { english: "quarantine", chinese: "检疫" },
+                    { english: "vaccination", chinese: "疫苗接种" },
+                    { english: "luggage", chinese: "行李" },
+                    { english: "boarding", chinese: "登机" },
+                    { english: "destination", chinese: "目的地" },
+                    { english: "cruise", chinese: "邮轮" },
+                    { english: "adventure", chinese: "冒险" }
+                ],
+                "Day 35": [
+                    { english: "transport", chinese: "交通" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "commute", chinese: "通勤" },
+                    { english: "congestion", chinese: "拥堵" },
+                    { english: "pedestrian", chinese: "行人" },
+                    { english: "subway", chinese: "地铁" },
+                    { english: "tram", chinese: "有轨电车" },
+                    { english: "ferry", chinese: "渡轮" },
+                    { english: "aviation", chinese: "航空" },
+                    { english: "airline", chinese: "航空公司" },
+                    { english: "terminal", chinese: "航站楼" },
+                    { english: "departure", chinese: "出发" },
+                    { english: "arrival", chinese: "到达" },
+                    { english: "ticket", chinese: "票" },
+                    { english: "fare", chinese: "票价" },
+                    { english: "schedule", chinese: "时刻表" },
+                    { english: "delay", chinese: "延误" },
+                    { english: "cancellation", chinese: "取消" },
+                    { english: "platform", chinese: "站台" },
+                    { english: "junction", chinese: "枢纽" },
+                    { english: "highway", chinese: "高速公路" },
+                    { english: "tunnel", chinese: "隧道" },
+                    { english: "bridge", chinese: "桥梁" },
+                    { english: "maintenance", chinese: "维护" },
+                    { english: "emission", chinese: "排放" }
+                ],
+                "Day 36": [
+                    { english: "energy", chinese: "能源" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "solar", chinese: "太阳的" },
+                    { english: "wind", chinese: "风" },
+                    { english: "hydro", chinese: "水力" },
+                    { english: "nuclear", chinese: "核的" },
+                    { english: "fossil", chinese: "化石" },
+                    { english: "fuel", chinese: "燃料" },
+                    { english: "coal", chinese: "煤" },
+                    { english: "petroleum", chinese: "石油" },
+                    { english: "gas", chinese: "天然气" },
+                    { english: "generator", chinese: "发电机" },
+                    { english: "turbine", chinese: "涡轮机" },
+                    { english: "grid", chinese: "电网" },
+                    { english: "efficiency", chinese: "效率" },
+                    { english: "consumption", chinese: "消耗" },
+                    { english: "conservation", chinese: "保护" },
+                    { english: "insulation", chinese: "绝缘" },
+                    { english: "sustainable", chinese: "可持续的" },
+                    { english: "carbon", chinese: "碳" },
+                    { english: "footprint", chinese: "足迹" },
+                    { english: "emission", chinese: "排放" },
+                    { english: "pollution", chinese: "污染" },
+                    { english: "climate", chinese: "气候" },
+                    { english: "greenhouse", chinese: "温室" }
+                ],
+                "Day 37": [
+                    { english: "communication", chinese: "通讯" },
+                    { english: "telecommunication", chinese: "电信" },
+                    { english: "satellite", chinese: "卫星" },
+                    { english: "broadband", chinese: "宽带" },
+                    { english: "wireless", chinese: "无线的" },
+                    { english: "network", chinese: "网络" },
+                    { english: "internet", chinese: "互联网" },
+                    { english: "website", chinese: "网站" },
+                    { english: "browser", chinese: "浏览器" },
+                    { english: "search", chinese: "搜索" },
+                    { english: "engine", chinese: "引擎" },
+                    { english: "social", chinese: "社交的" },
+                    { english: "media", chinese: "媒体" },
+                    { english: "platform", chinese: "平台" },
+                    { english: "blog", chinese: "博客" },
+                    { english: "vlog", chinese: "视频博客" },
+                    { english: "podcast", chinese: "播客" },
+                    { english: "streaming", chinese: "流媒体" },
+                    { english: "download", chinese: "下载" },
+                    { english: "upload", chinese: "上传" },
+                    { english: "virus", chinese: "病毒" },
+                    { english: "hacker", chinese: "黑客" },
+                    { english: "privacy", chinese: "隐私" },
+                    { english: "security", chinese: "安全" },
+                    { english: "encryption", chinese: "加密" }
+                ],
+                "Day 38": [
+                    { english: "finance", chinese: "金融" },
+                    { english: "banking", chinese: "银行业" },
+                    { english: "investment", chinese: "投资" },
+                    { english: "stock", chinese: "股票" },
+                    { english: "market", chinese: "市场" },
+                    { english: "bond", chinese: "债券" },
+                    { english: "share", chinese: "股份" },
+                    { english: "dividend", chinese: "股息" },
+                    { english: "interest", chinese: "利息" },
+                    { english: "rate", chinese: "利率" },
+                    { english: "loan", chinese: "贷款" },
+                    { english: "mortgage", chinese: "抵押贷款" },
+                    { english: "credit", chinese: "信用" },
+                    { english: "debit", chinese: "借记" },
+                    { english: "insurance", chinese: "保险" },
+                    { english: "premium", chinese: "保费" },
+                    { english: "claim", chinese: "索赔" },
+                    { english: "pension", chinese: "养老金" },
+                    { english: "retirement", chinese: "退休" },
+                    { english: "saving", chinese: "储蓄" },
+                    { english: "budget", chinese: "预算" },
+                    { english: "deficit", chinese: "赤字" },
+                    { english: "inflation", chinese: "通货膨胀" },
+                    { english: "recession", chinese: "衰退" },
+                    { english: "economy", chinese: "经济" }
+                ],
+                "Day 39": [
+                    { english: "art", chinese: "艺术" },
+                    { english: "painting", chinese: "绘画" },
+                    { english: "sculpture", chinese: "雕塑" },
+                    { english: "architecture", chinese: "建筑" },
+                    { english: "design", chinese: "设计" },
+                    { english: "photography", chinese: "摄影" },
+                    { english: "exhibition", chinese: "展览" },
+                    { english: "gallery", chinese: "画廊" },
+                    { english: "museum", chinese: "博物馆" },
+                    { english: "performance", chinese: "表演" },
+                    { english: "theater", chinese: "剧院" },
+                    { english: "drama", chinese: "戏剧" },
+                    { english: "opera", chinese: "歌剧" },
+                    { english: "ballet", chinese: "芭蕾" },
+                    { english: "concert", chinese: "音乐会" },
+                    { english: "symphony", chinese: "交响乐" },
+                    { english: "orchestra", chinese: "管弦乐队" },
+                    { english: "literature", chinese: "文学" },
+                    { english: "poetry", chinese: "诗歌" },
+                    { english: "novel", chinese: "小说" },
+                    { english: "author", chinese: "作者" },
+                    { english: "publisher", chinese: "出版商" },
+                    { english: "copyright", chinese: "版权" },
+                    { english: "creative", chinese: "创意的" },
+                    { english: "imagination", chinese: "想象力" }
+                ],
+                "Day 40": [
+                    { english: "sport", chinese: "运动" },
+                    { english: "athlete", chinese: "运动员" },
+                    { english: "competition", chinese: "竞赛" },
+                    { english: "championship", chinese: "锦标赛" },
+                    { english: "tournament", chinese: "锦标赛" },
+                    { english: "stadium", chinese: "体育场" },
+                    { english: "arena", chinese: "竞技场" },
+                    { english: "spectator", chinese: "观众" },
+                    { english: "referee", chinese: "裁判" },
+                    { english: "coach", chinese: "教练" },
+                    { english: "training", chinese: "训练" },
+                    { english: "fitness", chinese: "健身" },
+                    { english: "Olympic", chinese: "奥运的" },
+                    { english: "medal", chinese: "奖牌" },
+                    { english: "record", chinese: "记录" },
+                    { english: "amateur", chinese: "业余的" },
+                    { english: "professional", chinese: "专业的" },
+                    { english: "sponsor", chinese: "赞助商" },
+                    { english: "endorsement", chinese: "代言" },
+                    { english: "doping", chinese: "兴奋剂" },
+                    { english: "injury", chinese: "受伤" },
+                    { english: "rehabilitation", chinese: "康复" },
+                    { english: "teamwork", chinese: "团队合作" },
+                    { english: "strategy", chinese: "策略" },
+                    { english: "victory", chinese: "胜利" }
+                ],
+                "Day 41": [
+                    { english: "nutrition", chinese: "营养" },
+                    { english: "diet", chinese: "饮食" },
+                    { english: "protein", chinese: "蛋白质" },
+                    { english: "carbohydrate", chinese: "碳水化合物" },
+                    { english: "vitamin", chinese: "维生素" },
+                    { english: "mineral", chinese: "矿物质" },
+                    { english: "calorie", chinese: "卡路里" },
+                    { english: "obesity", chinese: "肥胖" },
+                    { english: "malnutrition", chinese: "营养不良" },
+                    { english: "vegetarian", chinese: "素食者" },
+                    { english: "vegan", chinese: "纯素食者" },
+                    { english: "organic", chinese: "有机的" },
+                    { english: "processed", chinese: "加工的" },
+                    { english: "preservative", chinese: "防腐剂" },
+                    { english: "allergy", chinese: "过敏" },
+                    { english: "digestion", chinese: "消化" },
+                    { english: "metabolism", chinese: "新陈代谢" },
+                    { english: "fasting", chinese: "禁食" },
+                    { english: "hydration", chinese: "补水" },
+                    { english: "supplement", chinese: "补充剂" },
+                    { english: "antioxidant", chinese: "抗氧化剂" },
+                    { english: "cholesterol", chinese: "胆固醇" },
+                    { english: "gluten", chinese: "麸质" },
+                    { english: "lactose", chinese: "乳糖" },
+                    { english: "wellness", chinese: "健康" }
+                ],
+                "Day 42": [
+                    { english: "psychology", chinese: "心理学" },
+                    { english: "behavior", chinese: "行为" },
+                    { english: "cognitive", chinese: "认知的" },
+                    { english: "emotion", chinese: "情绪" },
+                    { english: "intelligence", chinese: "智力" },
+                    { english: "memory", chinese: "记忆" },
+                    { english: "perception", chinese: "感知" },
+                    { english: "consciousness", chinese: "意识" },
+                    { english: "subconscious", chinese: "潜意识" },
+                    { english: "therapy", chinese: "治疗" },
+                    { english: "counseling", chinese: "咨询" },
+                    { english: "stress", chinese: "压力" },
+                    { english: "anxiety", chinese: "焦虑" },
+                    { english: "depression", chinese: "抑郁" },
+                    { english: "phobia", chinese: "恐惧症" },
+                    { english: "addiction", chinese: "成瘾" },
+                    { english: "meditation", chinese: "冥想" },
+                    { english: "mindfulness", chinese: "正念" },
+                    { english: "personality", chinese: "人格" },
+                    { english: "instinct", chinese: "本能" },
+                    { english: "motivation", chinese: "动机" },
+                    { english: "behaviorism", chinese: "行为主义" },
+                    { english: "developmental", chinese: "发展的" },
+                    { english: "attachment", chinese: "依恋" },
+                    { english: "trauma", chinese: "创伤" }
+                ],
+                "Day 43": [
+                    { english: "linguistics", chinese: "语言学" },
+                    { english: "bilingual", chinese: "双语的" },
+                    { english: "accent", chinese: "口音" },
+                    { english: "dialect", chinese: "方言" },
+                    { english: "pronunciation", chinese: "发音" },
+                    { english: "grammar", chinese: "语法" },
+                    { english: "vocabulary", chinese: "词汇" },
+                    { english: "syntax", chinese: "句法" },
+                    { english: "semantics", chinese: "语义学" },
+                    { english: "phonetics", chinese: "语音学" },
+                    { english: "fluency", chinese: "流利" },
+                    { english: "proficiency", chinese: "熟练度" },
+                    { english: "interpreter", chinese: "口译员" },
+                    { english: "translation", chinese: "翻译" },
+                    { english: "slang", chinese: "俚语" },
+                    { english: "idiom", chinese: "习语" },
+                    { english: "metaphor", chinese: "隐喻" },
+                    { english: "literacy", chinese: "读写能力" },
+                    { english: "illiterate", chinese: "文盲的" },
+                    { english: "polyglot", chinese: "多语言者" },
+                    { english: "etymology", chinese: "词源学" },
+                    { english: "bilingualism", chinese: "双语制" },
+                    { english: "mother tongue", chinese: "母语" },
+                    { english: "second language", chinese: "第二语言" },
+                    { english: "language acquisition", chinese: "语言习得" }
+                ],
+                "Day 44": [
+                    { english: "anthropology", chinese: "人类学" },
+                    { english: "archaeology", chinese: "考古学" },
+                    { english: "civilization", chinese: "文明" },
+                    { english: "artifact", chinese: "文物" },
+                    { english: "excavation", chinese: "挖掘" },
+                    { english: "hominid", chinese: "原始人类" },
+                    { english: "evolution", chinese: "进化" },
+                    { english: "indigenous", chinese: "土著的" },
+                    { english: "tribe", chinese: "部落" },
+                    { english: "nomadic", chinese: "游牧的" },
+                    { english: "migration", chinese: "迁移" },
+                    { english: "ritual", chinese: "仪式" },
+                    { english: "ceremony", chinese: "典礼" },
+                    { english: "mythology", chinese: "神话" },
+                    { english: "folklore", chinese: "民间传说" },
+                    { english: "kinship", chinese: "亲属关系" },
+                    { english: "matriarchal", chinese: "母系的" },
+                    { english: "patriarchal", chinese: "父系的" },
+                    { english: "egalitarian", chinese: "平等的" },
+                    { english: "cultural relativism", chinese: "文化相对论" },
+                    { english: "ethnography", chinese: "民族志" },
+                    { english: "fieldwork", chinese: "田野调查" },
+                    { english: "colonization", chinese: "殖民化" },
+                    { english: "acculturation", chinese: "文化适应" },
+                    { english: "globalization", chinese: "全球化" }
+                ],
+                "Day 45": [
+                    { english: "astronomy", chinese: "天文学" },
+                    { english: "cosmos", chinese: "宇宙" },
+                    { english: "galaxy", chinese: "星系" },
+                    { english: "planet", chinese: "行星" },
+                    { english: "satellite", chinese: "卫星" },
+                    { english: "asteroid", chinese: "小行星" },
+                    { english: "comet", chinese: "彗星" },
+                    { english: "meteor", chinese: "流星" },
+                    { english: "orbit", chinese: "轨道" },
+                    { english: "gravity", chinese: "重力" },
+                    { english: "telescope", chinese: "望远镜" },
+                    { english: "observatory", chinese: "天文台" },
+                    { english: "constellation", chinese: "星座" },
+                    { english: "supernova", chinese: "超新星" },
+                    { english: "black hole", chinese: "黑洞" },
+                    { english: "light year", chinese: "光年" },
+                    { english: "solar system", chinese: "太阳系" },
+                    { english: "space exploration", chinese: "太空探索" },
+                    { english: "astronaut", chinese: "宇航员" },
+                    { english: "spacecraft", chinese: "航天器" },
+                    { english: "NASA", chinese: "美国宇航局" },
+                    { english: "cosmonaut", chinese: "宇航员" },
+                    { english: "space station", chinese: "空间站" },
+                    { english: "extraterrestrial", chinese: "外星人" },
+                    { english: "universe", chinese: "宇宙" }
+                ],
+                "Day 46": [
+                    { english: "geology", chinese: "地质学" },
+                    { english: "earthquake", chinese: "地震" },
+                    { english: "volcano", chinese: "火山" },
+                    { english: "eruption", chinese: "喷发" },
+                    { english: "tectonic", chinese: "地壳构造的" },
+                    { english: "plate", chinese: "板块" },
+                    { english: "fault", chinese: "断层" },
+                    { english: "mineral", chinese: "矿物" },
+                    { english: "fossil", chinese: "化石" },
+                    { english: "sediment", chinese: "沉积物" },
+                    { english: "erosion", chinese: "侵蚀" },
+                    { english: "glacier", chinese: "冰川" },
+                    { english: "avalanche", chinese: "雪崩" },
+                    { english: "landslide", chinese: "山体滑坡" },
+                    { english: "tsunami", chinese: "海啸" },
+                    { english: "canyon", chinese: "峡谷" },
+                    { english: "delta", chinese: "三角洲" },
+                    { english: "peninsula", chinese: "半岛" },
+                    { english: "archipelago", chinese: "群岛" },
+                    { english: "continent", chinese: "大陆" },
+                    { english: "mantle", chinese: "地幔" },
+                    { english: "core", chinese: "地核" },
+                    { english: "crust", chinese: "地壳" },
+                    { english: "magma", chinese: "岩浆" },
+                    { english: "lava", chinese: "熔岩" }
+                ],
+                "Day 47": [
+                    { english: "meteorology", chinese: "气象学" },
+                    { english: "climate", chinese: "气候" },
+                    { english: "weather", chinese: "天气" },
+                    { english: "forecast", chinese: "预报" },
+                    { english: "temperature", chinese: "温度" },
+                    { english: "humidity", chinese: "湿度" },
+                    { english: "precipitation", chinese: "降水" },
+                    { english: "rainfall", chinese: "降雨" },
+                    { english: "drought", chinese: "干旱" },
+                    { english: "monsoon", chinese: "季风" },
+                    { english: "typhoon", chinese: "台风" },
+                    { english: "hurricane", chinese: "飓风" },
+                    { english: "tornado", chinese: "龙卷风" },
+                    { english: "blizzard", chinese: "暴风雪" },
+                    { english: "frost", chinese: "霜" },
+                    { english: "hail", chinese: "冰雹" },
+                    { english: "sleet", chinese: "雨夹雪" },
+                    { english: "fog", chinese: "雾" },
+                    { english: "dew", chinese: "露水" },
+                    { english: "atmosphere", chinese: "大气" },
+                    { english: "barometer", chinese: "气压计" },
+                    { english: "hygrometer", chinese: "湿度计" },
+                    { english: "anemometer", chinese: "风速计" },
+                    { english: "climate change", chinese: "气候变化" },
+                    { english: "global warming", chinese: "全球变暖" }
+                ],
+                "Day 48": [
+                    { english: "oceanography", chinese: "海洋学" },
+                    { english: "marine", chinese: "海洋的" },
+                    { english: "current", chinese: "洋流" },
+                    { english: "tide", chinese: "潮汐" },
+                    { english: "wave", chinese: "波浪" },
+                    { english: "tsunami", chinese: "海啸" },
+                    { english: "coral reef", chinese: "珊瑚礁" },
+                    { english: "plankton", chinese: "浮游生物" },
+                    { english: "algae", chinese: "藻类" },
+                    { english: "whale", chinese: "鲸鱼" },
+                    { english: "dolphin", chinese: "海豚" },
+                    { english: "shark", chinese: "鲨鱼" },
+                    { english: "octopus", chinese: "章鱼" },
+                    { english: "seal", chinese: "海豹" },
+                    { english: "penguin", chinese: "企鹅" },
+                    { english: "seabird", chinese: "海鸟" },
+                    { english: "estuary", chinese: "河口" },
+                    { english: "lagoon", chinese: "泻湖" },
+                    { english: "trench", chinese: "海沟" },
+                    { english: "abyss", chinese: "深渊" },
+                    { english: "salinity", chinese: "盐度" },
+                    { english: "buoyancy", chinese: "浮力" },
+                    { english: "sonar", chinese: "声呐" },
+                    { english: "submarine", chinese: "潜水艇" },
+                    { english: "aquatic", chinese: "水生的" }
+                ],
+                "Day 49": [
+                    { english: "botany", chinese: "植物学" },
+                    { english: "photosynthesis", chinese: "光合作用" },
+                    { english: "chlorophyll", chinese: "叶绿素" },
+                    { english: "pollination", chinese: "授粉" },
+                    { english: "germination", chinese: "发芽" },
+                    { english: "deciduous", chinese: "落叶的" },
+                    { english: "evergreen", chinese: "常绿的" },
+                    { english: "herbaceous", chinese: "草本的" },
+                    { english: "woody", chinese: "木本的" },
+                    { english: "shrub", chinese: "灌木" },
+                    { english: "fern", chinese: "蕨类" },
+                    { english: "moss", chinese: "苔藓" },
+                    { english: "fungus", chinese: "真菌" },
+                    { english: "mushroom", chinese: "蘑菇" },
+                    { english: "pollen", chinese: "花粉" },
+                    { english: "nectar", chinese: "花蜜" },
+                    { english: "root", chinese: "根" },
+                    { english: "stem", chinese: "茎" },
+                    { english: "leaf", chinese: "叶" },
+                    { english: "flower", chinese: "花" },
+                    { english: "fruit", chinese: "果实" },
+                    { english: "seed", chinese: "种子" },
+                    { english: "bark", chinese: "树皮" },
+                    { english: "crop", chinese: "农作物" },
+                    { english: "horticulture", chinese: "园艺" }
+                ],
+                "Day 50": [
+                    { english: "zoology", chinese: "动物学" },
+                    { english: "mammal", chinese: "哺乳动物" },
+                    { english: "reptile", chinese: "爬行动物" },
+                    { english: "amphibian", chinese: "两栖动物" },
+                    { english: "bird", chinese: "鸟类" },
+                    { english: "fish", chinese: "鱼类" },
+                    { english: "insect", chinese: "昆虫" },
+                    { english: "invertebrate", chinese: "无脊椎动物" },
+                    { english: "vertebrate", chinese: "脊椎动物" },
+                    { english: "predator", chinese: "捕食者" },
+                    { english: "prey", chinese: "猎物" },
+                    { english: "habitat", chinese: "栖息地" },
+                    { english: "ecosystem", chinese: "生态系统" },
+                    { english: "food chain", chinese: "食物链" },
+                    { english: "biodiversity", chinese: "生物多样性" },
+                    { english: "endangered", chinese: "濒危的" },
+                    { english: "extinct", chinese: "灭绝的" },
+                    { english: "migration", chinese: "迁徙" },
+                    { english: "hibernation", chinese: "冬眠" },
+                    { english: "camouflage", chinese: "伪装" },
+                    { english: "evolution", chinese: "进化" },
+                    { english: "adaptation", chinese: "适应" },
+                    { english: "species", chinese: "物种" },
+                    { english: "genus", chinese: "属" },
+                    { english: "taxonomy", chinese: "分类学" }
+                ],
+                "Day 51": [
+                    { english: "government", chinese: "政府" },
+                    { english: "policy", chinese: "政策" },
+                    { english: "democracy", chinese: "民主" },
+                    { english: "election", chinese: "选举" },
+                    { english: "vote", chinese: "投票" },
+                    { english: "parliament", chinese: "议会" },
+                    { english: "congress", chinese: "国会" },
+                    { english: "senate", chinese: "参议院" },
+                    { english: "legislation", chinese: "立法" },
+                    { english: "regulation", chinese: "法规" },
+                    { english: "taxation", chinese: "税收" },
+                    { english: "budget", chinese: "预算" },
+                    { english: "welfare", chinese: "福利" },
+                    { english: "pension", chinese: "养老金" },
+                    { english: "subsidy", chinese: "补贴" },
+                    { english: "infrastructure", chinese: "基础设施" },
+                    { english: "military", chinese: "军事的" },
+                    { english: "defense", chinese: "防御" },
+                    { english: "diplomacy", chinese: "外交" },
+                    { english: "treaty", chinese: "条约" },
+                    { english: "alliance", chinese: "联盟" },
+                    { english: "sanction", chinese: "制裁" },
+                    { english: "embassy", chinese: "大使馆" },
+                    { english: "immigration", chinese: "移民" },
+                    { english: "citizenship", chinese: "公民身份" },
+                    { english: "human rights", chinese: "人权" },
+                    { english: "monitor", chinese: "监督" },
+                    { english: "wealth gap", chinese: "贫富差距" },
+                    { english: "social instability", chinese: "社会不稳定" },
+                    { english: "minimum income", chinese: "最低收入" }
+                ],
+                "Day 52": [
+                    { english: "crime", chinese: "犯罪" },
+                    { english: "law", chinese: "法律" },
+                    { english: "justice", chinese: "正义" },
+                    { english: "court", chinese: "法庭" },
+                    { english: "judge", chinese: "法官" },
+                    { english: "jury", chinese: "陪审团" },
+                    { english: "trial", chinese: "审判" },
+                    { english: "evidence", chinese: "证据" },
+                    { english: "witness", chinese: "证人" },
+                    { english: "verdict", chinese: "裁决" },
+                    { english: "sentence", chinese: "判决" },
+                    { english: "prison", chinese: "监狱" },
+                    { english: "reform", chinese: "改革" },
+                    { english: "rehabilitation", chinese: "康复" },
+                    { english: "victim", chinese: "受害者" },
+                    { english: "offender", chinese: "罪犯" },
+                    { english: "burglary", chinese: "入室盗窃" },
+                    { english: "theft", chinese: "偷窃" },
+                    { english: "fraud", chinese: "欺诈" },
+                    { english: "corruption", chinese: "腐败" },
+                    { english: "bribery", chinese: "贿赂" },
+                    { english: "cybercrime", chinese: "网络犯罪" },
+                    { english: "terrorism", chinese: "恐怖主义" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "prevention", chinese: "预防" },
+                    { english: "legal system", chinese: "法律体制" },
+                    { english: "crime rate", chinese: "犯罪率" },
+                    { english: "national security", chinese: "国家安全" },
+                    { english: "punishment", chinese: "惩罚" },
+                    { english: "discrimination", chinese: "歧视" }
+                ],
+                "Day 53": [
+                    { english: "media", chinese: "媒体" },
+                    { english: "journalism", chinese: "新闻业" },
+                    { english: "press", chinese: "新闻界" },
+                    { english: "broadcast", chinese: "广播" },
+                    { english: "television", chinese: "电视" },
+                    { english: "radio", chinese: "收音机" },
+                    { english: "newspaper", chinese: "报纸" },
+                    { english: "magazine", chinese: "杂志" },
+                    { english: "internet", chinese: "互联网" },
+                    { english: "social", chinese: "社交的" },
+                    { english: "network", chinese: "网络" },
+                    { english: "blog", chinese: "博客" },
+                    { english: "vlog", chinese: "视频博客" },
+                    { english: "podcast", chinese: "播客" },
+                    { english: "influence", chinese: "影响" },
+                    { english: "celebrity", chinese: "名人" },
+                    { english: "advertisement", chinese: "广告" },
+                    { english: "propaganda", chinese: "宣传" },
+                    { english: "censorship", chinese: "审查" },
+                    { english: "fake", chinese: "假的" },
+                    { english: "bias", chinese: "偏见" },
+                    { english: "objective", chinese: "客观的" },
+                    { english: "subjective", chinese: "主观的" },
+                    { english: "reliable", chinese: "可靠的" },
+                    { english: "credible", chinese: "可信的" },
+                    { english: "media hype", chinese: "炒作" },
+                    { english: "privacy", chinese: "隐私" },
+                    { english: "misleading", chinese: "误导的" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "code of ethics", chinese: "道德准则" }
+                ],
+                "Day 54": [
+                    { english: "work", chinese: "工作" },
+                    { english: "pressure", chinese: "压力" },
+                    { english: "ease", chinese: "缓解" },
+                    { english: "deprive", chinese: "剥夺" },
+                    { english: "mental", chinese: "精神的" },
+                    { english: "physical", chinese: "身体的" },
+                    { english: "overload", chinese: "超载" },
+                    { english: "pace", chinese: "步伐" },
+                    { english: "accelerate", chinese: "加速" },
+                    { english: "eliminate", chinese: "消除" },
+                    { english: "commodity", chinese: "商品" },
+                    { english: "entertain", chinese: "娱乐" },
+                    { english: "material", chinese: "物质的" },
+                    { english: "alienation", chinese: "疏远" },
+                    { english: "bond", chinese: "纽带" },
+                    { english: "belonging", chinese: "归属感" },
+                    { english: "single-parent", chinese: "单亲" },
+                    { english: "violence", chinese: "暴力" },
+                    { english: "trivial", chinese: "琐事" },
+                    { english: "diabetes", chinese: "糖尿病" },
+                    { english: "carbohydrate", chinese: "碳水化合物" },
+                    { english: "heartache", chinese: "心脏病" },
+                    { english: "hypertension", chinese: "高血压" },
+                    { english: "balance", chinese: "平衡" },
+                    { english: "reconcile", chinese: "调和" },
+                    { english: "attitude", chinese: "态度" },
+                    { english: "protein", chinese: "蛋白质" },
+                    { english: "vitamin", chinese: "维生素" },
+                    { english: "leisure", chinese: "休闲的" },
+                    { english: "physical", chinese: "物理的" }
+                ],
+                "Day 55": [
+                    { english: "health", chinese: "健康" },
+                    { english: "fitness", chinese: "健身" },
+                    { english: "medical", chinese: "医疗的" },
+                    { english: "sickness", chinese: "疾病" },
+                    { english: "illness", chinese: "疾病" },
+                    { english: "gym", chinese: "健身房" },
+                    { english: "diet", chinese: "饮食" },
+                    { english: "fat", chinese: "脂肪" },
+                    { english: "fiber", chinese: "纤维" },
+                    { english: "positive", chinese: "积极的" },
+                    { english: "negative", chinese: "消极的" },
+                    { english: "optimistic", chinese: "乐观的" },
+                    { english: "pessimistic", chinese: "悲观的" },
+                    { english: "obesity", chinese: "肥胖症" },
+                    { english: "overweight", chinese: "超重的" },
+                    { english: "nutrition", chinese: "营养" },
+                    { english: "exercise", chinese: "锻炼" },
+                    { english: "prevention", chinese: "预防" },
+                    { english: "vaccine", chinese: "疫苗" },
+                    { english: "surgery", chinese: "手术" },
+                    { english: "therapy", chinese: "疗法" },
+                    { english: "stress", chinese: "压力" },
+                    { english: "depression", chinese: "抑郁" },
+                    { english: "anxiety", chinese: "焦虑" },
+                    { english: "addiction", chinese: "成瘾" },
+                    { english: "recovery", chinese: "康复" },
+                    { english: "hygiene", chinese: "卫生" },
+                    { english: "sanitation", chinese: "卫生设施" },
+                    { english: "epidemic", chinese: "流行病" },
+                    { english: "mental health", chinese: "心理健康" }
+                ],
+                "Day 56": [
+                    { english: "culture", chinese: "文化" },
+                    { english: "tradition", chinese: "传统" },
+                    { english: "heritage", chinese: "遗产" },
+                    { english: "custom", chinese: "习俗" },
+                    { english: "diversity", chinese: "多样性" },
+                    { english: "identity", chinese: "身份" },
+                    { english: "ethnic", chinese: "民族的" },
+                    { english: "minority", chinese: "少数民族" },
+                    { english: "indigenous", chinese: "本土的" },
+                    { english: "global", chinese: "全球的" },
+                    { english: "art", chinese: "艺术" },
+                    { english: "music", chinese: "音乐" },
+                    { english: "dance", chinese: "舞蹈" },
+                    { english: "literature", chinese: "文学" },
+                    { english: "museum", chinese: "博物馆" },
+                    { english: "gallery", chinese: "画廊" },
+                    { english: "festival", chinese: "节日" },
+                    { english: "ceremony", chinese: "仪式" },
+                    { english: "ritual", chinese: "仪式" },
+                    { english: "language", chinese: "语言" },
+                    { english: "dialect", chinese: "方言" },
+                    { english: "bilingual", chinese: "双语的" },
+                    { english: "multicultural", chinese: "多元文化的" },
+                    { english: "assimilation", chinese: "同化" },
+                    { english: "integration", chinese: "融合" },
+                    { english: "cultural conflicts", chinese: "文化冲突" },
+                    { english: "tourist destination", chinese: "旅游胜地" },
+                    { english: "commercialize", chinese: "商业化" },
+                    { english: "culture diversity", chinese: "文化多元性" },
+                    { english: "culture shock", chinese: "文化冲击" }
+                ],
+                "Day 57": [
+                    { english: "tourism", chinese: "旅游业" },
+                    { english: "travel", chinese: "旅行" },
+                    { english: "tourist", chinese: "游客" },
+                    { english: "destination", chinese: "目的地" },
+                    { english: "attraction", chinese: "景点" },
+                    { english: "landmark", chinese: "地标" },
+                    { english: "heritage", chinese: "遗产" },
+                    { english: "sightseeing", chinese: "观光" },
+                    { english: "adventure", chinese: "冒险" },
+                    { english: "backpacker", chinese: "背包客" },
+                    { english: "itinerary", chinese: "行程" },
+                    { english: "accommodation", chinese: "住宿" },
+                    { english: "hotel", chinese: "酒店" },
+                    { english: "resort", chinese: "度假村" },
+                    { english: "hostel", chinese: "青年旅舍" },
+                    { english: "transportation", chinese: "交通" },
+                    { english: "guide", chinese: "导游" },
+                    { english: "brochure", chinese: "小册子" },
+                    { english: "souvenir", chinese: "纪念品" },
+                    { english: "passport", chinese: "护照" },
+                    { english: "visa", chinese: "签证" },
+                    { english: "customs", chinese: "海关" },
+                    { english: "currency", chinese: "货币" },
+                    { english: "exchange", chinese: "兑换" },
+                    { english: "luggage", chinese: "行李" },
+                    { english: "boarding", chinese: "登机" },
+                    { english: "flight", chinese: "航班" },
+                    { english: "cruise", chinese: "邮轮" },
+                    { english: "ecotourism", chinese: "生态旅游" },
+                    { english: "broaden horizon", chinese: "拓宽视野" }
+                ],
+                "Day 58": [
+                    { english: "environment", chinese: "环境" },
+                    { english: "ecology", chinese: "生态" },
+                    { english: "ecosystem", chinese: "生态系统" },
+                    { english: "pollution", chinese: "污染" },
+                    { english: "conservation", chinese: "保护" },
+                    { english: "sustainability", chinese: "可持续性" },
+                    { english: "climate", chinese: "气候" },
+                    { english: "weather", chinese: "天气" },
+                    { english: "global warming", chinese: "全球变暖" },
+                    { english: "greenhouse effect", chinese: "温室效应" },
+                    { english: "carbon footprint", chinese: "碳足迹" },
+                    { english: "emission", chinese: "排放" },
+                    { english: "renewable", chinese: "可再生的" },
+                    { english: "solar", chinese: "太阳的" },
+                    { english: "wind", chinese: "风" },
+                    { english: "hydro", chinese: "水力" },
+                    { english: "energy", chinese: "能源" },
+                    { english: "fossil fuel", chinese: "化石燃料" },
+                    { english: "recycle", chinese: "回收" },
+                    { english: "waste", chinese: "废物" },
+                    { english: "deforestation", chinese: "森林砍伐" },
+                    { english: "biodiversity", chinese: "生物多样性" },
+                    { english: "endangered", chinese: "濒危的" },
+                    { english: "extinction", chinese: "灭绝" },
+                    { english: "habitat", chinese: "栖息地" },
+                    { english: "natural resources", chinese: "自然资源" },
+                    { english: "water scarcity", chinese: "水资源紧缺" },
+                    { english: "air quality", chinese: "空气质量" },
+                    { english: "environmentally friendly", chinese: "环保的" },
+                    { english: "sustainable", chinese: "可持续的" }
+                ],
+                "Day 59": [
+                    { english: "education", chinese: "教育" },
+                    { english: "academic", chinese: "学术的" },
+                    { english: "curriculum", chinese: "课程" },
+                    { english: "pedagogy", chinese: "教学法" },
+                    { english: "literacy", chinese: "识字" },
+                    { english: "tuition", chinese: "学费" },
+                    { english: "scholarship", chinese: "奖学金" },
+                    { english: "discipline", chinese: "纪律" },
+                    { english: "assessment", chinese: "评估" },
+                    { english: "qualification", chinese: "资格" },
+                    { english: "vocational", chinese: "职业的" },
+                    { english: "kindergarten", chinese: "幼儿园" },
+                    { english: "primary", chinese: "初级的" },
+                    { english: "secondary", chinese: "中级的" },
+                    { english: "tertiary", chinese: "高等的" },
+                    { english: "distance", chinese: "远程的" },
+                    { english: "online", chinese: "在线的" },
+                    { english: "interactive", chinese: "互动的" },
+                    { english: "critical", chinese: "批判的" },
+                    { english: "creativity", chinese: "创造力" },
+                    { english: "motivation", chinese: "动机" },
+                    { english: "achievement", chinese: "成就" },
+                    { english: "performance", chinese: "表现" },
+                    { english: "plagiarism", chinese: "抄袭" },
+                    { english: "faculty", chinese: "院系" },
+                    { english: "academic performance", chinese: "成绩" },
+                    { english: "facilities", chinese: "设施" },
+                    { english: "compulsory", chinese: "必修的" },
+                    { english: "selective", chinese: "选修的" },
+                    { english: "vocational education", chinese: "职业教育" }
+                ],
+                "Day 60": [
+                    { english: "technology", chinese: "技术" },
+                    { english: "innovation", chinese: "创新" },
+                    { english: "digital", chinese: "数字的" },
+                    { english: "virtual", chinese: "虚拟的" },
+                    { english: "artificial", chinese: "人工的" },
+                    { english: "intelligence", chinese: "智能" },
+                    { english: "robot", chinese: "机器人" },
+                    { english: "automation", chinese: "自动化" },
+                    { english: "software", chinese: "软件" },
+                    { english: "hardware", chinese: "硬件" },
+                    { english: "program", chinese: "程序" },
+                    { english: "algorithm", chinese: "算法" },
+                    { english: "data", chinese: "数据" },
+                    { english: "privacy", chinese: "隐私" },
+                    { english: "security", chinese: "安全" },
+                    { english: "network", chinese: "网络" },
+                    { english: "cyber", chinese: "网络的" },
+                    { english: "invention", chinese: "发明" },
+                    { english: "device", chinese: "设备" },
+                    { english: "gadget", chinese: "小工具" },
+                    { english: "wireless", chinese: "无线的" },
+                    { english: "cloud", chinese: "云" },
+                    { english: "blockchain", chinese: "区块链" },
+                    { english: "interface", chinese: "界面" },
+                    { english: "database", chinese: "数据库" },
+                    { english: "distance learning", chinese: "远程教学" },
+                    { english: "appliance", chinese: "电器" },
+                    { english: "efficiency", chinese: "效率" },
+                    { english: "creation", chinese: "创造" },
+                    { english: "telecommunication", chinese: "远程通讯" }
+                ]
+            };
+            
+            // Game state
+            let gameState = {
+                cards: [],
+                selectedCard: null,
+                matchedPairs: 0,
+                timer: 0,
+                timerInterval: null,
+                gameStarted: false,
+                currentDay: "Day 1"
+            };
+            
+            // DOM elements
+            const gameContainer = document.getElementById('game-container');
+            const pairsLeftDisplay = document.getElementById('pairs-left');
+            const timerDisplay = document.getElementById('timer');
+            const restartBtn = document.getElementById('restart-btn');
+            const completionModal = document.getElementById('completion-modal');
+            const completionMessage = document.getElementById('completion-message');
+            const closeModalBtn = document.getElementById('close-modal');
+            const selectSound = document.getElementById('select-sound');
+            const matchSound = document.getElementById('match-sound');
+            const completeSound = document.getElementById('complete-sound');
+            const wrongSound = document.getElementById('wrong-sound');
+            const dayDropdown = document.getElementById('day-dropdown');
+            const gameTitle = document.getElementById('game-title');
+            const dropdown = document.querySelector('.dropdown');
+            const dropBtn = document.querySelector('.dropbtn');
+
+            function setDropdownOpen(isOpen) {
+                dropdown.classList.toggle('open', isOpen);
+                dropBtn.setAttribute('aria-expanded', String(isOpen));
+            }
+            
+            // Initialize the day dropdown
+            function initDayDropdown() {
+                for (let i = 1; i <= 60; i++) {
+                    const day = `Day ${i}`;
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.textContent = day;
+                    link.setAttribute('role', 'menuitem');
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        gameState.currentDay = day; // 这行确保更新当前天数
+                        updateGameTitle();
+                        initGame();
+                        setDropdownOpen(false);
+                    });
+                    dayDropdown.appendChild(link);
+                }
+            }
+            
+            // Update game title with current day
+            function updateGameTitle() {
+                gameTitle.textContent = `IELTS Word Crush - ${gameState.currentDay}`;
+            }
+            
+            // Initialize game
+            function initGame() {
+                // Stop an existing timer before replacing the state object.
+                if (gameState.timerInterval !== null) {
+                    clearInterval(gameState.timerInterval);
+                }
+
+                // Reset game state
+                gameState = {
+                    ...gameState,
+                    cards: [],
+                    selectedCard: null,
+                    matchedPairs: 0,
+                    timer: 0,
+                    timerInterval: null,
+                    gameStarted: false
+                };
+                
+                // Get current day's word pairs
+                const currentWordPairs = allWordPairs[gameState.currentDay];
+                const totalPairs = currentWordPairs.length;
+                
+                // Update display with actual pair count
+                pairsLeftDisplay.textContent = totalPairs;
+                timerDisplay.textContent = '0';
+                
+                // Clear game container
+                gameContainer.innerHTML = '';
+                
+                let gameCards = [];
+                
+                // Add English cards
+                currentWordPairs.forEach(pair => {
+                    gameCards.push({
+                        type: 'english',
+                        content: pair.english,
+                        pairId: pair.english,
+                        matched: false
+                    });
+                });
+                
+                // Add Chinese cards
+                currentWordPairs.forEach(pair => {
+                    gameCards.push({
+                        type: 'chinese',
+                        content: pair.chinese,
+                        pairId: pair.english,
+                        matched: false
+                    });
+                });
+                
+                // Shuffle cards
+                gameCards = shuffleArray(gameCards);
+                
+                // Create card elements
+                gameCards.forEach((card, index) => {
+                    const cardElement = document.createElement('div');
+                    const colorClass = `color${Math.floor(Math.random() * 12) + 1}`;
+                    cardElement.className = `card ${colorClass}`;
+                    cardElement.textContent = card.content;
+                    cardElement.dataset.index = index;
+                    cardElement.dataset.pairId = card.pairId;
+                    cardElement.dataset.type = card.type;
+                    
+                    // Adjust font size based on content length
+                    if (card.content.length > 8) {
+                        cardElement.style.fontSize = '12px';
+                    } else if (card.content.length > 5) {
+                        cardElement.style.fontSize = '13px';
+                    }
+                    
+                    cardElement.addEventListener('click', () => selectCard(cardElement));
+                    gameContainer.appendChild(cardElement);
+                    
+                    // Save card reference
+                    gameState.cards.push({
+                        element: cardElement,
+                        pairId: card.pairId,
+                        type: card.type,
+                        content: card.content,
+                        matched: false
+                    });
+                });
+            }
+            
+            // Shuffle array
+            function shuffleArray(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            }
+
+            // Match by the visible English-Chinese combination. This avoids
+            // unfair failures when two identical-looking cards occur in a day.
+            function areCardsAMatch(firstCard, secondCard) {
+                if (firstCard.type === secondCard.type) return false;
+
+                const english = firstCard.type === 'english' ? firstCard.content : secondCard.content;
+                const chinese = firstCard.type === 'chinese' ? firstCard.content : secondCard.content;
+
+                return allWordPairs[gameState.currentDay].some(pair =>
+                    pair.english === english && pair.chinese === chinese
+                );
+            }
+
+            // Select card
+            function selectCard(cardElement) {
+                const index = parseInt(cardElement.dataset.index);
+                const card = gameState.cards[index];
+                
+                // Ignore if card is matched or already selected
+                if (card.matched || cardElement === gameState.selectedCard) return;
+                
+                // Start timer if game hasn't started
+                if (!gameState.gameStarted) {
+                    startTimer();
+                    gameState.gameStarted = true;
+                }
+                
+                // Play selection sound
+                selectSound.currentTime = 0;
+                selectSound.play();
+                
+                // If no card is selected, select this one
+                if (!gameState.selectedCard) {
+                    gameState.selectedCard = cardElement;
+                    cardElement.classList.add('selected');
+                    return;
+                }
+                
+                // Check for match with already selected card
+                const selectedIndex = parseInt(gameState.selectedCard.dataset.index);
+                const selectedCard = gameState.cards[selectedIndex];
+                
+                // Check the visible English-Chinese combination.
+                if (areCardsAMatch(card, selectedCard)) {
+                    // Match success
+                    card.matched = true;
+                    selectedCard.matched = true;
+                    
+                    // Play match sound
+                    matchSound.currentTime = 0;
+                    matchSound.play();
+                    
+                    // Remove selection
+                    gameState.selectedCard.classList.remove('selected');
+                    
+                    // Add match effect
+                    cardElement.classList.add('matched');
+                    gameState.selectedCard.classList.add('matched');
+                    
+                    gameState.matchedPairs++;
+                    pairsLeftDisplay.textContent = allWordPairs[gameState.currentDay].length - gameState.matchedPairs;
+                    
+                    // Check if all cards are matched (no pairs left)
+                    const allMatched = gameState.cards.every(c => c.matched);
+                    if (allMatched) {
+                        setTimeout(() => {
+                            completeSound.currentTime = 0;
+                            completeSound.play();
+                            endGame();
+                        }, 500);
+                    }
+                } else {
+                    // Match failed
+                    wrongSound.currentTime = 0;
+                    wrongSound.play();
+                    
+                    // Show mismatch effect briefly
+                    cardElement.style.transform = 'scale(1.1)';
+                    cardElement.style.boxShadow = '0 0 15px gold';
+                    setTimeout(() => {
+                        cardElement.style.transform = '';
+                        cardElement.style.boxShadow = '';
+                    }, 500);
+                }
+                
+                // Reset selected card
+                gameState.selectedCard.classList.remove('selected');
+                gameState.selectedCard = null;
+            }
+            
+            // Start timer
+            function startTimer() {
+                // 确保彻底清理之前的定时器
+                if (gameState.timerInterval) {
+                    clearInterval(gameState.timerInterval);
+                    gameState.timerInterval = null;
+                }
+                
+                gameState.timer = 0;
+                const startTime = Date.now();
+                
+                gameState.timerInterval = setInterval(() => {
+                    const currentTime = Date.now();
+                    gameState.timer = Math.floor((currentTime - startTime) / 1000);
+                    timerDisplay.textContent = gameState.timer;
+                }, 1000);
+            }
+            
+            // End game
+            function endGame() {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+                gameState.gameStarted = false;
+                
+                // Show completion message
+                const minutes = Math.floor(gameState.timer / 60);
+                const seconds = gameState.timer % 60;
+                const timeString = minutes > 0 
+                    ? `${minutes}分${seconds}秒` 
+                    : `${seconds}秒`;
+                
+                const currentWordPairs = allWordPairs[gameState.currentDay];
+                const totalPairs = currentWordPairs.length;
+                
+                completionMessage.textContent = `恭喜完成${gameState.currentDay}背单词任务！用时 ${timeString}`;
+                completionModal.style.display = 'flex';
+                
+                // 添加点击确认按钮后重新开始游戏的逻辑
+                closeModalBtn.onclick = function() {
+                    completionModal.style.display = 'none';
+                    initGame(); // 重新初始化游戏
+                };
+            }
+            
+            // Initialize
+            initDayDropdown();
+            updateGameTitle();
+            initGame();
+
+            dropBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                setDropdownOpen(!dropdown.classList.contains('open'));
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!dropdown.contains(event.target)) {
+                    setDropdownOpen(false);
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    setDropdownOpen(false);
+                    dropBtn.focus();
+                }
+            });
+
+            // 添加重启按钮事件监听器
+            restartBtn.addEventListener('click', initGame);
+        });
+    </script>
+</body>
+</html>
