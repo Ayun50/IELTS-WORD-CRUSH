@@ -43,7 +43,7 @@ So I designed **IELTS 消消乐** — turning vocabulary review into a simple an
 
 ## 🚀 How to Use | 使用方法
 
-1. Open the game in your browser. 🌐
+1. Open the game in your browser. 🌐 https://ayun50.github.io/IELTS-WORD-CRUSH/
 2. Start the game and find matching vocabulary items. 🔍
 3. Match the correct pairs and continue playing. 🧩
 4. Repeat regularly to reinforce vocabulary memory. 🔄
